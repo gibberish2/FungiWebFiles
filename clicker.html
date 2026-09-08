@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clicker | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+
+<script>
+setTheme('ocean') // runs BEFORE theme.js loads
+</script>
+
+<script src="theme.js"></script>
+
+
+<style>
+    :root{ font-family: 'Comic Sans MS', cursive; }
+    #countDisplay { margin-top: 100px; margin-left: 50px; }
+    #clickerBtn {
+        border-radius: 10px;
+        background-color: #F54927;
+        cursor: pointer;
+        width: 95px;
+        height: 35px;
+        border-width: 3px;
+        padding: 5px 10px;
+        transition: all 0.3s ease-in-out;
+        font-family: inherit;
+        }
+    #clickerBtn:hover { 
+        width: 105.5px; height: 37.5px; border-radius:12.5px; border-width: 6px; padding: 2.5px 20px;
+        }
+    .upgradeBtn {
+        width: 150px;
+        background-color: #F54927;
+        height: 45px;
+        transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+        font-family: inherit;
+        cursor: pointer;
+        border-radius: 10px;
+    }
+    .upgradeBtn:hover { 
+        width: 157.5px;
+        height: 42.5px;
+    }
+    #firstUpgradePrice { margin-left: 5px; font-weight: bold; }
+    #secondUpgradePrice { margin-left: 5px; font-weight: bold; }
+    .backToLauncher{
+        width: 150px;
+        height: 50px;
+        transition: width 0.3s ease-in-out, height 0.3s ease-in-out;
+        font-family: Comic Sans MS; Cursive;
+        cursor:pointer;
+        border-radius: 10px;
+        background-color: #F09307;
+    }
+    .backToLauncher:hover{
+        width: 147.5px;
+        height: 47.5px;
+    }
+
+</style>
+</head>
+<body>
+    <h1> Homemade Clicker</h1>
+    <h5>This code is 80 percent mine, 20 percent AI (mostly fixing bug and stuff like that)</h5>
+    <p>Current Score: <span id="countDisplay">0</span></p>
+    <button id="clickerBtn">Click me!</button>
+    <br><br>
+    <button class="upgradeBtn" id="firstUpgradeBtn">+1 click value: <span id="firstUpgradePrice">25</span></button>
+    <br><br>
+    <button class="upgradeBtn" id="secondUpgradeBtn">+1 auto add: <span id="secondUpgradePrice">350</span></button>
+    <br><br><br><br><br>
+    <button class="backToLauncher" onclick="location.href='launcher.html'"> Go back to the launcher</button>
+
+    <script>
+        let score = 0;
+        let clickValue = 1;
+        let firstUpgradeCost = 25;
+        let secondUpgradeCost = 350;
+        let autoInterval = 1000; 
+        let autoIntervalIncrease = 0; 
+        let secondUpgradePurchased = false;
+
+        const countDisplay = document.getElementById("countDisplay");
+        const clickerBtn = document.getElementById("clickerBtn");
+        const firstUpgradeBtn = document.getElementById("firstUpgradeBtn");
+        const secondUpgradeBtn = document.getElementById("secondUpgradeBtn");
+        const firstUpgradePriceLabel = document.getElementById("firstUpgradePrice");
+        const secondUpgradePriceLabel = document.getElementById("secondUpgradePrice");
+
+        function thenAddOne() {
+            score = score + clickValue;
+            countDisplay.textContent = Math.floor(score);
+        }
+        function autoIncrease() {
+            score = score + autoIntervalIncrease;
+            // autointerval is the amount of time passed before something is added to the score
+            // autointervalincrease is the amount added after said time
+            // autoincrease is the function that houses it all
+            // these notes are not ai
+            countDisplay.textContent = Math.floor(score); 
+            setTimeout(autoIncrease, autoInterval);
+        }
+
+        autoIncrease();
+        // since the variable starts as 0, then the function adds to the variable every time you click the button 
+
+        function firstUpgradePurchase() {
+            if (score >= firstUpgradeCost) {
+                score = score - firstUpgradeCost;
+                clickValue = clickValue + 1;
+                
+                firstUpgradeCost = Math.floor(firstUpgradeCost * 1.5);
+                countDisplay.textContent = Math.floor(score);
+                firstUpgradePriceLabel.textContent = firstUpgradeCost;
+            } else {
+                alert("Not enough points!");
+            }
+        }
+        function secondUpgradePurchase() {
+            if (score >= secondUpgradeCost) {
+                if (secondUpgradePurchased === false){ 
+                    secondUpgradePurchased = true; 
+                }
+                score = score - secondUpgradeCost;
+                autoIntervalIncrease = autoIntervalIncrease + 1;
+                
+                secondUpgradeCost = Math.floor(secondUpgradeCost * 1.5);
+                
+                countDisplay.textContent = Math.floor(score);
+                secondUpgradePriceLabel.textContent = secondUpgradeCost;
+            } else {
+                alert("Not enough points!");
+            }
+        }
+
+        clickerBtn.addEventListener("click", thenAddOne); 
+        firstUpgradeBtn.addEventListener("click", firstUpgradePurchase); 
+        secondUpgradeBtn.addEventListener("click", secondUpgradePurchase);
+    </script>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

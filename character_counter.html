@@ -1,0 +1,13 @@
+<input id="txtbox"></input>
+<br>
+<span id="stat">Characters:</span>
+<script>
+    let txt = 0
+    jsTxtBox = document.getElementById('txtbox');
+    jsStatusTxt = document.getElementById('stat');
+    jsTxtBox.addEventListener('keyup', input);
+    function input() {
+        txt = jsTxtBox.value.length;
+        jsStatusTxt.textContent = txt;
+    }
+</script>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OVO | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+
+<script> 
+    setTheme('ocean') // runs BEFORE theme.js loads 
+</script>
+<script src="theme.js"></script>
+
+    <style>
+        :root {
+            /* Standardized font declaration */
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+        }
+
+
+
+
+
+        .loading-text {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: lowercase;
+        }
+.loader {
+    --main-size: 4em;
+    --text-color: var(--accent-color);
+    /* Changed shadow to a transparent version of the accent color for better blending */
+    --shadow-color: color-mix(in srgb, var(--accent-color), black 40%);
+    --shine-color: rgba(255, 255, 255, 0.25);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    user-select: none;
+    position: relative;
+    font-size: var(--main-size);
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--text-color);
+    width: 7.3em;
+    height: 1em;
+    filter: drop-shadow(0 0 0.05em var(--accent-color));
+}
+
+.loader .text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    position: absolute;
+}
+
+/* Base clipping and sizing for text slices */
+.loader .text:nth-child(1) { clip-path: polygon(0% 0%, 11.11% 0%, 11.11% 100%, 0% 100%); font-size: calc(var(--main-size) / 20); margin-left: -2.1em; opacity: 0.6; }
+.loader .text:nth-child(2) { clip-path: polygon(11.11% 0%, 22.22% 0%, 22.22% 100%, 11.11% 100%); font-size: calc(var(--main-size) / 16); margin-left: -0.98em; opacity: 0.7; }
+.loader .text:nth-child(3) { clip-path: polygon(22.22% 0%, 33.33% 0%, 33.33% 100%, 22.22% 100%); font-size: calc(var(--main-size) / 13); margin-left: -0.33em; opacity: 0.8; }
+.loader .text:nth-child(4) { clip-path: polygon(33.33% 0%, 44.44% 0%, 44.44% 100%, 33.33% 100%); font-size: calc(var(--main-size) / 11); margin-left: -0.05em; opacity: 0.9; }
+.loader .text:nth-child(5) { clip-path: polygon(44.44% 0%, 55.55% 0%, 55.55% 100%, 44.44% 100%); font-size: calc(var(--main-size) / 10); margin-left: 0em; opacity: 1; }
+.loader .text:nth-child(6) { clip-path: polygon(55.55% 0%, 66.66% 0%, 66.66% 100%, 55.55% 100%); font-size: calc(var(--main-size) / 11); margin-left: 0.05em; opacity: 0.9; }
+.loader .text:nth-child(7) { clip-path: polygon(66.66% 0%, 77.77% 0%, 77.77% 100%, 66.66% 100%); font-size: calc(var(--main-size) / 13); margin-left: 0.33em; opacity: 0.8; }
+.loader .text:nth-child(8) { clip-path: polygon(77.77% 0%, 88.88% 0%, 88.88% 100%, 77.77% 100%); font-size: calc(var(--main-size) / 16); margin-left: 0.98em; opacity: 0.7; }
+.loader .text:nth-child(9) { clip-path: polygon(88.88% 0%, 100% 0%, 100% 100%, 88.88% 100%); font-size: calc(var(--main-size) / 20); margin-left: 2.1em; opacity: 0.6; }
+
+.loader .text span {
+    animation: scrolling 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite, shadow 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite;
+}
+
+/* Gradients set to use Accent Color */
+.loader .text:nth-child(1) span { background: linear-gradient(to right, var(--accent-color) 4%, var(--shadow-color) 7%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(2) span { background: linear-gradient(to right, var(--accent-color) 9%, var(--shadow-color) 13%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(3) span { background: linear-gradient(to right, var(--accent-color) 15%, var(--shadow-color) 18%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(4) span { background: linear-gradient(to right, var(--accent-color) 20%, var(--shadow-color) 23%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(6) span { background: linear-gradient(to right, var(--shadow-color) 29%, var(--accent-color) 32%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(7) span { background: linear-gradient(to right, var(--shadow-color) 34%, var(--accent-color) 37%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(8) span { background: linear-gradient(to right, var(--shadow-color) 39%, var(--accent-color) 42%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(9) span { background: linear-gradient(to right, var(--shadow-color) 45%, var(--accent-color) 48%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+
+.loader .line {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    height: 0.05em;
+    width: calc(var(--main-size) / 2);
+    margin-top: 0.9em;
+    border-radius: 0.05em;
+}
+
+.loader .line::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: var(--accent-color);
+    opacity: 0.3;
+}
+
+.loader .line::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: var(--accent-color);
+    border-radius: 0.05em;
+    transform: translateX(-90%);
+    animation: wobble 2s cubic-bezier(0.5, 0.8, 0.5, 0.2) infinite;
+}
+
+@keyframes wobble { 0% { transform: translateX(-90%); } 50% { transform: translateX(90%); } 100% { transform: translateX(-90%); } }
+@keyframes scrolling { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes shadow { 0% { background-position: -98% 0; } 100% { background-position: 102% 0; } }
+
+    </style>
+</head>
+<body>
+    <div id="loader-container" style="background-color: var(--bg-color, #111); display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999;">
+        <!-- New Advanced Animated Loader -->
+        <div class="loader">
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+        </div>
+
+        <!-- Centered Subtext -->
+        <div class="loading-text" style="text-align: center; margin-top: 20px; color: var(--accent-color); font-family: 'Comic Sans MS', cursive;">
+            Loading... <br>
+            I am STEVE☠ 
+            Loading Animation from 
+            <a href="https://uiverse.io/andrew-manzyk/unlucky-mouse-21" target="_blank">UIverse</a>
+        </div>
+    </div>
+<body>
+    <script>
+        const url = "https://raw.githubusercontent.com/gibberish2/Fungifiles/main/ovo.html";
+
+        async function loadTemplate() {
+            try {
+                let response = await fetch(url);
+                if (response.ok) {
+                    let html = await response.text();
+                    
+                    document.open();
+                    document.write(html);
+                    document.close();
+
+                    // 1. Inject the CSS into the NEW document
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        .back-launcher-btn {
+                            position: fixed;
+                            bottom: 8px;
+                            left: 10px;
+                            z-index: 100000;
+                            padding: 8px 25px;
+                            background-color: rgba(0, 0, 25, 0.5);
+                            color: white;
+                            border: 2px solid white;
+                            border-radius: 50px;
+                            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                            font-weight: bold;
+                            cursor: pointer;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+                            backdrop-filter: blur(4px);
+                            transition: transform 0.2s;
+                        }
+                        .back-launcher-btn:hover {
+                            transform: scale(1.1);
+                            background-color: rgba(0, 0, 50, 0.3);
+                        }
+                    `;
+                    document.head.appendChild(style);
+
+                    // 2. Create the button and apply the class
+                    const backButton = document.createElement('button');
+                    backButton.className = 'back-launcher-btn'; // Matches the CSS above
+                    backButton.innerHTML = '← Return to Launcher';
+                    
+                    backButton.onclick = function() {
+                        window.location.href = 'launcher.html';
+                    };
+                    document.body.appendChild(backButton);
+
+                } else {
+                    throw new Error("CDN response not OK");
+                }
+            } catch (e) {
+                console.error("Load failed:", e);
+                document.body.innerHTML = "<h1>Failed to load game.</h1>";
+            }
+        }
+
+        loadTemplate();
+    </script>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

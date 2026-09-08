@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic Calculator | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+<script> 
+    setTheme('ocean') // runs BEFORE theme.js loads 
+</script>
+<script src="theme.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body, button, input {
+            font-family: "Comic Sans MS", "Comic Sans", cursive, sans-serif;
+        }
+
+        .content {
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+        }
+
+        .calc-container {
+            background-color: var(--nav-color);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            border: 2px solid var(--accent-color);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.4rem;
+        }
+
+        input[type="number"] {
+            width: 65px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid var(--accent-color);
+            background: var(--bg-color);
+            color: white;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .calc-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            background-color: var(--accent-color);
+            color: white;
+            transition: transform 0.2s;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .calc-btn:hover {
+            transform: scale(1.03);
+            filter: brightness(1.1);
+        }
+
+        .results { text-align: left; display: none; }
+        .result-item { margin: 12px 0; padding: 12px; background: rgba(255,255,255,0.08); border-radius: 10px; border-left: 6px solid var(--accent-color); transition: transform 0.3s ease; cursor: default; }
+        .result-item:hover { transform: translateX(15px) scale(1.02); background: rgba(255,255,255,0.12); }
+        .result-label { font-weight: bold; color: var(--accent-color); display: block; font-size: 0.85rem; letter-spacing: 1px; }
+        .result-val { font-size: 1.2rem; }
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="home.html" class="nav-link" title = "Brings you to the home page" alt = "home page navigation button">Home</a>
+        <a href="launcher.html" class="nav-link" title = "Brings you to the games page" alt = "games page navigation button">Games</a>
+        <a href="tools.html" class="nav-link active" title = "Brings you to the tools page" alt = "tools page navigation button">Tools</a>
+        <a href="music.html" class="nav-link" title = "Brings you to the music page" alt = "music page navigation button">Music</a>
+        <a href="about.html" class="nav-link" title = "Brings you to the about page" alt = "about page navigation button">About</a>
+        <a href="settings.html" class="nav-link" title = "Brings you to the settings page" alt = "settings page navigation button">Settings</a>
+    </div>
+</nav>
+
+<div class="content">
+    <h1>Quadratic Analyzer</h1>
+    <p>Fill in the boxes for ax^2 + bx + c = 0</p>
+    <div class="calc-container">
+        <div class="input-group">
+            <input type="number" id="inputA" placeholder="a" value="1">
+            <span>x^2 +</span>
+            <input type="number" id="inputB" placeholder="b" value="0">
+            <span>x +</span>
+            <input type="number" id="inputC" placeholder="c" value="0">
+        </div>
+        <button class="calc-btn" onclick="calculate()">Find Properties!</button>
+        <div id="resultsArea" class="results">
+            <div class="result-item">
+                <span class="result-label">LINE OF SYMMETRY</span>
+                <span id="resSymmetry" class="result-val"></span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">VERTEX (H, K)</span>
+                <span id="resVertex" class="result-val"></span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Y-INTERCEPT</span>
+                <span id="resYInt" class="result-val"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function calculate() {
+        const a = parseFloat(document.getElementById('inputA').value);
+        const b = parseFloat(document.getElementById('inputB').value);
+        const c = parseFloat(document.getElementById('inputC').value);
+        if (isNaN(a) || a === 0) { alert("The 'a' value can't be 0!"); return; }
+        const h = -b / (2 * a);
+        const k = (a * (h ** 2)) + (b * h) + c;
+        document.getElementById('resSymmetry').innerText = "x = " + h.toFixed(2);
+        document.getElementById('resVertex').innerText = "(" + h.toFixed(2) + ", " + k.toFixed(2) + ")";
+        document.getElementById('resYInt').innerText = "(0, " + c + ")";
+        document.getElementById('resultsArea').style.display = 'block';
+    }
+
+    // --- GLOBAL MUSIC LOGIC ---
+</script>
+<script src="spores.js"></script>
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

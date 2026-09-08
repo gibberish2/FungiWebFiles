@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+<script> 
+    setTheme('ocean') // runs BEFORE theme.js loads
+</script> 
+<script src="theme.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* GLOBAL THEME SYNC */
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            margin: 0;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            transition: background-color 0.3s ease;
+        }
+
+        .content {
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .glow-text {
+            color: #fff;
+            text-shadow: 0 0 7px var(--accent-color), 0 0 10px var(--accent-color), 0 0 21px var(--accent-color);
+            animation: pulse-glow 2s infinite alternate;
+        }
+        .oi-title {
+            font-family: 'Oi', serif;
+            font-weight: 1;
+            font-style: normal;
+        }
+        @keyframes pulse-glow {
+            from { text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color); }
+            to { text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color), 0 0 30px var(--accent-color); }
+        }
+
+        .image-container {
+            background-color: rgba(128, 128, 128, 0.4);
+            border-radius: 15px;
+            padding: 15px;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            animation: float 4s ease-in-out infinite;
+        }
+    
+        .image-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px var(--accent-color);
+            animation-play-state: paused;
+        }
+    
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .theme-btn {
+            padding: 12px 24px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+            color: white;
+            background-color: var(--accent-color);
+            position: relative;
+            transition: transform 0.2s, filter 0.2s, width 0.4s ease, height 0.4s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90vw;
+            white-space: nowrap;
+            overflow: hidden;
+            padding: 12px 24px;
+            width: fit-content;
+            min-width: 150px; /* Optional: keeps it from getting too tiny */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap; /* Keeps text on one line during the slide */
+            overflow: hidden;
+}
+            
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+
+        #btnText { 
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; 
+            display: inline-block;
+            pointer-events: none;
+        }
+        
+        .text-hidden { 
+            opacity: 0; 
+            transform: translateY(5px); 
+        }
+        :root {
+            interpolate-size: allow-keywords; /* Enables smooth 'auto' transitions */
+            --accent-color: #38bdf8;
+
+        }
+
+
+
+
+/* random content */
+.content {
+    padding: 40px;
+}
+
+/* blur background */
+body.popup-open > .content,
+body.popup-open > nav {
+    filter: blur(6px);
+}
+.updateDiv {
+    filter: none !important;
+}
+/* overlay */
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+
+    z-index: 50;
+}
+
+/* popup */
+.updateDiv {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+
+    background: var(--bg-color);
+    color: white;
+
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid var(--accent-color);
+
+    width: fit-content;
+    max-width: 90vw;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.25s ease;
+
+    z-index: 1000;
+}
+
+/* active state */
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.updateDiv.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* button */
+button {
+    margin-top: 15px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent-color);
+    color: black;
+    cursor: pointer;
+}
+
+#rndmText {
+    color: white;
+    display: block;
+    margin-top: 10px;
+}
+
+    </style>
+    <!--The Oi font import from google fonts (w service btw 5 out of 5 stars)-->
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Oi&display=swap');
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="home.html" class="nav-link active" title = "Brings you to the home page" alt = "home page navigation button">Home</a>
+        <a href="launcher.html" class="nav-link" title = "Brings you to the games page" alt = "games page navigation button">Games</a>
+        <a href="tools.html" class="nav-link" title = "Brings you to the tools page" alt = "tools page navigation button">Tools</a>
+        <a href="music.html" class="nav-link" title = "Brings you to the music page" alt = "music page navigation button">Music</a>
+        <a href="about.html" class="nav-link" title = "Brings you to the about page" alt = "about page navigation button">About</a>
+        <a href="settings.html" class="nav-link" title = "Brings you to the settings page" alt = "settings page navigation button">Settings</a>
+    </div>
+</nav>
+
+<div class="content">
+    <div class="image-container">
+        <img src="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd" alt="Fungi Logo" width="200">
+    </div>
+<h1 class="glow-text oi-title" style="margin-top: 0;">F U N G I</h1>
+<p style="font-style: italic;">"It spreads" - Random biologist</p>
+<span id="rndmText"></span>
+    <script>
+            // --- ORIGINAL HOME LOGIC ---
+    let batteryPlaceholder = "unknown";
+    if ('getBattery' in navigator) {
+        navigator.getBattery().then(function(battery) {
+            batteryPlaceholder = Math.floor(battery.level * 100);
+        });
+    }
+
+const content = [
+    { text: "Are we dead ahh💀", url: null },
+    { text: "Whoopsie😅", url: null },
+    { text: "Bro, who is playing prodigy in the big '26", url: null },
+    { text: "3.14159265358979323846264338327950288419716939937510", url: "https://example.com/math.png" },
+    { text: "🤷67🤷", url: null },
+    { text: "BATTERY_PLACEHOLDER", url: null },
+    { text: "LEBRONNNNNN bobobobooom🧨", url: "https://example.com/lebron.jpg" },
+    { text: "Hello, i am under da watur, please help me😓", url: null },
+    { text: "GET OUTTTTT", url: null },
+    { text: "Stop clicking me", url: null },
+    { text: "The answer to everything, in the universe, is.... 42", url: null },
+    { text: "What is (6 x 7) + 6 - 7 ", url: null },
+    { text: "If you don't like mangos, you certainly like musturd🧠🍄", url: null },
+    { text: "Thanks for using this site!", url: null },
+    { text: "What am I doing with my life", url: null },
+    { text: "Shhhh.... don't tell anyone...", url: null },
+    { text: "Mason W. has a GF, her name is Fortnite", url: null },
+    { text: "Daniel ❤ Lola", url: null },
+    { text: "What's the time? Playtime!", url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrtHntwdOpGXvyrglSW17UXcireMr6zjH5Hw&s" },
+    { text: "Don't check the basement, there's totally not a dead body down there", url: null },
+    { text: "Roblox is falling off in the big '26", url: null },
+    { text: "Aint no way anyone can be defending playing Steal a Brainrot, Escape the tsunami for Brainrots is the future😅", url: null },
+    { text: "Skrrrt🚗", url: null },
+    { text: "Nuclear Energy, ironically, is actually the safest form of getting electricity", url: null },
+    { text: "Why are you reading these?", url: null },
+    { text: "Don't give Chase any links🔗", url: "https://media2.giphy.com/media/v1.Y2lkPTZjMDliOTUyamdjaWJsM3N6eWFrNXdrZzgxaHFiaTdoM2F2cTR0em1haDEyenJ4ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/e7CD41ekE5ZUSgTnkn/giphy.gif" },
+    { text: "We're cooked, now we just gotta add some salt...", url: null },
+    { text: "Blerb blorb blerbity blerb, that's how you know someone is very wise.", url: null },
+    { text: "'Dun Dun Dunnnnn,' - Mr. Bauchman", url: null },
+    { text: "Only the OGs remember Mrs. Boettner", url: null },
+    { text: "Bow down to the nerds", url: null },
+    { text: "Who ever thought of Nerds gummy clusters needs to get a raise", url: null },
+    { text: "Bro, I'm serious, stop clicking me.", url: null },
+    { text: "'Whaddid I do' - Pro Ragebaiter Aryadeep", url: "https://codehs.com/uploads/d2096a4a34cd49a281ec30ddd8100dfc" },
+    { text: "Elon Musk is autistic", url: null },
+    { text: "Escooby dooby doo, were r u? we hav som work to du.", url: null },
+    { text: "How did this come out before GTA 6💔", url: null },
+    { text: "DREAM ON DREAM ON YEAHAHAHAHAH", url: null },
+    { text: "The minecraft fortnite collab is in the works before GTA 6💔", url: null },
+    { text: "It's pledge of alligence not pledge of the flag💔", url: null },
+    { text: "What's your favorite scary movie?😱", url: null },
+    { text: "WHAT DA HEEEEEEE🏒🏒 NAW OH MY GODDD NO WAYAYAYAY", url: null },
+    { text: "'Kids these days... they can't stop dabbing'", url: "https://ih1.redbubble.net/image.419301534.0578/raf,750x1000,075,t,FFFFFF:97ab1c12de.u3.jpg" },
+    { text: "Bro my dog is being so cute rn", url: "https://codehs.com/uploads/423fa7c52762d9dd62b1ada1cb2c0e50"},
+    { text: "🎶Driving in my car, right after a beer🎶", url:"https://i1.sndcdn.com/artworks-byEI1Ks9SQr13Gn3-zZIJGw-t1080x1080.jpg"},
+    { text: "I got this... FAAAHHHH👻", url: null },
+    { text: "SHUT UP... MOM! SILENCE FROM YOU, YOU'RE CUT OFF, from TALKING🤐🤫", url: null },
+];
+<img id="rndmImage" style="display:none; width: 200px; margin-top: 10px;">
+function changeText() {
+    const rndmText = document.getElementById('rndmText');
+    const rndmImg = document.getElementById('rndmImage'); // Ensure you have <img id="rndmImage"> in HTML
+    
+    rndmText.classList.add('text-hidden');
+
+    setTimeout(() => {
+        // Pick a random object from the list
+        let choice = content[Math.floor(Math.random() * content.length)];
+        let displayText = choice.text;
+        
+        // Handle Battery Placeholder
+        if (displayText.includes("BATTERY_PLACEHOLDER")) {
+            displayText = "Your battery's totally not at " + batteryPlaceholder + "% percent.🤭";
+        }
+        
+        // Update Text
+        rndmText.innerText = displayText;
+
+        // Optional Image Logic
+        if (choice.url) {
+            rndmImg.src = choice.url;
+            rndmImg.style.display = "block"; // Show image if URL exists
+        } else {
+            rndmImg.style.display = "none";  // Hide image if URL is null/empty
+        }
+
+        void rndmText.offsetWidth; 
+        rndmText.classList.remove('text-hidden');
+    }, 200);
+}
+
+
+
+        changeText();
+    </script>
+
+
+
+    <button onclick="openPopup()" class="theme-btn">Changelog🖋</button>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="updateDiv" id="updateBox">
+    <h2>Version 1.0.1</h2>
+    <p>-New Noir theme!</p>
+    <p>-More games soon👀</p>
+    <p>-Added new tool in the tools part of the site!</p>
+    <p>-Yipeee!</p>
+<button onclick="window.open('changelog.txt', '_blank')" class="theme-btn" style="font-family: 'Comic Sans MS', 'Comic Sans', cursive;">
+    Changelog🖋
+</button>
+
+    <button class="theme-btn" id="closeBtn">Close</button>
+</div>
+<script>
+const overlay = document.getElementById("overlay");
+const updateBox = document.getElementById("updateBox");
+const closeBtn = document.getElementById("closeBtn");
+
+function openPopup() {
+    document.body.classList.add("popup-open");
+    overlay.classList.add("active");
+    updateBox.classList.add("active");
+}
+
+function closePopup() {
+    overlay.classList.remove("active");
+    updateBox.classList.remove("active");
+    document.body.classList.remove("popup-open");
+}
+
+overlay.addEventListener("click", closePopup);
+closeBtn.addEventListener("click", closePopup);
+
+
+openPopup();
+</script>
+
+
+<img id="btnImage" src="" style="display:none; width: 200px; margin-top: 10px;">
+
+
+
+
+
+
+
+
+
+
+
+<script src="spores.js"></script>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

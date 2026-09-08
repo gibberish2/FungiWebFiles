@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Paper.io 2 | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+
+<script> 
+    setTheme('ocean') // runs BEFORE theme.js loads 
+</script>
+<script src="theme.js"></script>
+
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loader-container" style="background-color: var(--bg-color, #111); display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999;">
+        <div class="loader">
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+        </div>
+
+        <div class="loading-text" style="text-align: center; margin-top: 20px; color: var(--accent-color); font-family: 'Comic Sans MS', cursive;">
+            Loading... <br> 
+            tuff, just tuff<br>
+            Loading Animation from 
+            <a href="https://uiverse.io/andrew-manzyk/unlucky-mouse-21" target="_blank">UIverse</a>
+        </div>
+    </div>
+
+<script>
+const url = "https://raw.githubusercontent.com/gibberish2/Fungifiles/main/paperio2.htm";
+
+async function loadTemplate() {
+    try {
+        let response = await fetch(url);
+        if (!response.ok) throw new Error("Fetch failed");
+
+        let html = await response.text();
+
+        // Create iframe
+        const iframe = document.createElement("iframe");
+        iframe.style.position = "fixed";
+        iframe.style.top = "0";
+        iframe.style.left = "0";
+        iframe.style.width = "100vw";
+        iframe.style.height = "100vh";
+        iframe.style.border = "none";
+        iframe.style.zIndex = "1";
+
+        document.body.appendChild(iframe);
+
+        // Inject game into iframe
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(html);
+        doc.close();
+
+        // ✅ Inject your CSS properly
+        const style = document.createElement('style');
+        style.textContent = `
+        .back-launcher-btn {
+            position: fixed;
+            bottom: 8px;
+            left: 10px;
+            z-index: 100000;
+            padding: 8px 25px;
+            background-color: rgba(0, 0, 25, 0.5);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50px;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            transition: transform 0.2s;
+        }
+        .back-launcher-btn:hover {
+            transform: scale(1.1);
+            background-color: rgba(0, 0, 50, 0.3);
+        }
+        `;
+        document.head.appendChild(style);
+
+        // ✅ Create button with class
+        const backButton = document.createElement('button');
+        backButton.className = 'back-launcher-btn';
+        backButton.innerHTML = '← Return to Launcher';
+
+        backButton.onclick = () => {
+            window.location.href = 'launcher.html';
+        };
+
+        document.body.appendChild(backButton);
+
+        // Remove loader
+        const loader = document.getElementById("loader-container");
+        if (loader) loader.remove();
+
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+loadTemplate();
+</script>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

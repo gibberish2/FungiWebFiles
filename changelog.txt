@@ -1,0 +1,15 @@
+Smaller updates will be closer to the big updates, big updates with be farther away from each other
+
+Version 1.0!
+3/31/26
+-Added this changelog thingy📜(ooohhhh aaaahhhhh, so fancy shamncy am I right?)
+-Changed version number from 2.59, to 1.0, because I was moving to fast with the version numbers1️⃣2️⃣3️⃣
+-Added everything to Github🤖
+-Took a nap😭
+
+Version 1.0.1!
+4/1/26
+-Made it SOOO much easier to add different themes, and to change themes🖌
+-Added the Noir theme🎩
+-Fully deleted the IXL cloaking!💥
+-Added a new "tool" (you could say), in the tools part of the website!

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snow Rider 3D | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+<script>
+setTheme('ocean') // runs BEFORE theme.js loads 
+</script> 
+<script src="theme.js"></script>
+
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            /* Standardized font declaration */
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="loader-container" style="background-color: var(--bg-color, #111); display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999;">
+        <!-- New Advanced Animated Loader -->
+        <div class="loader">
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+        </div>
+
+        <!-- Centered Subtext -->
+        <div class="loading-text" style="text-align: center; margin-top: 20px; color: var(--accent-color); font-family: 'Comic Sans MS', cursive;">
+            Loading... <br> 
+            When you see a error, click "ok" <br>
+            Loading Animation from 
+            <a href="https://uiverse.io/andrew-manzyk/unlucky-mouse-21" target="_blank">UIverse</a>
+        </div>
+    </div>
+
+
+
+    <script>
+        const url = "https://raw.githubusercontent.com/gibberish2/Fungifiles/main/snowrider.htm";
+
+        async function loadTemplate() {
+            try {
+                let response = await fetch(url);
+                if (response.ok) {
+                    let html = await response.text();
+                    
+                    document.open();
+                    document.write(html);
+                    document.close();
+
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        .back-launcher-btn {
+                            position: fixed;
+                            bottom: 8px;
+                            left: 10px;
+                            z-index: 100000;
+                            padding: 8px 25px;
+                            background-color: rgba(0, 0, 25, 0.5);
+                            color: white;
+                            border: 2px solid white;
+                            border-radius: 50px;
+                            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+                            font-weight: bold;
+                            cursor: pointer;
+                            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+                            backdrop-filter: blur(4px);
+                            transition: transform 0.2s;
+                        }
+                        .back-launcher-btn:hover { transform: scale(1.1); background-color: rgba(0, 0, 50, 0.3); }
+                    `;
+                    document.head.appendChild(style);
+
+                    const backButton = document.createElement('button');
+                    backButton.className = 'back-launcher-btn';
+                    backButton.innerHTML = '← Return to Launcher';
+                    backButton.onclick = () => { window.location.href = 'launcher.html'; };
+                    document.body.appendChild(backButton);
+
+                } else {
+                    throw new Error("CDN response not OK");
+                }
+            } catch (e) {
+                console.error("Load failed:", e);
+                document.body.innerHTML = "<h1 style='color:white; text-align:center; padding-top:50px; font-family: cursive;'>Failed to load game.</h1>";
+            }
+        }
+
+        loadTemplate();
+    </script>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

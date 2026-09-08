@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+
+<script>
+setTheme('ocean') // runs BEFORE theme.js loads
+</script>
+
+<script src="theme.js"></script>
+
+
+
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .theme-btn {
+            padding: 12px 24px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+            transition: 0.2s;
+            color: white;
+        }
+        .theme-btn:hover { transform: scale(1.05); filter: brightness(1.2); }
+        .settings-container { padding: 50px 20px; text-align: center; color: white; font-family: 'Comic Sans MS', sans-serif;}
+        
+        .section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            display: inline-block;
+            width: 80%;
+            max-width: 500px;
+        }
+        .sporeSlider {
+            accent-color: var(--accent-color)
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="home.html" class="nav-link" title = "Brings you to the home page" alt = "home page navigation button">Home</a>
+        <a href="launcher.html" class="nav-link" title = "Brings you to the games page" alt = "games page navigation button">Games</a>
+        <a href="tools.html" class="nav-link" title = "Brings you to the tools page" alt = "tools page navigation button">Tools</a>
+        <a href="music.html" class="nav-link" title = "Brings you to the music page" alt = "music page navigation button">Music</a>
+        <a href="about.html" class="nav-link" title = "Brings you to the about page" alt = "about page navigation button">About</a>
+        <a href="settings.html" class="nav-link active" title = "Brings you to the settings page" alt = "settings page navigation button">Settings</a>
+    </div>
+</nav>
+
+<div class="settings-container">
+    <h1>Appearance Settings</h1>
+    
+    <button class="theme-btn" style="background-color: #38bdf8;" onclick="setTheme('ocean')">Ocean</button>
+    <button class="theme-btn" style="background-color: #34d399;" onclick="setTheme('forest')">Forest</button>
+    <button class="theme-btn" style="background-color: #fbbf24;" onclick="setTheme('sunset')">Sunset</button>
+    <button class="theme-btn" style="background-color: #a855f7;" onclick="setTheme('midnight')">Midnight</button>
+    <button class="theme-btn" style="background-color: #ff4b5c;" onclick="setTheme('cherry')">Cherry</button>
+    <button class="theme-btn" style="background-color: #00ff41; color: black;" onclick="setTheme('electric')">Electric</button>
+    <button class="theme-btn" style="background-color: #292929; color: white;" onclick="setTheme('noir')">Noir</button>
+
+
+<br>
+    <!-- SPORE SLIDER SECTION -->
+    <div class="section">
+        <h2>Spore Density</h2>
+        <p>Adjust the number of spores floating in the background.</p>
+        <input type="range" id="sporeSlider" class="sporeSlider" min="0" max="500" value="50" style="width: 80%;">
+        <p>Current Count: <span id="sliderValue" style="font-weight: bold; color: var(--accent-color);">50</span></p>
+    </div>
+
+    <div class="section">
+        <h2>Data Management</h2>
+        <button class="theme-btn" style="background-color: #ef4444;" onclick="clearVault()">Relock Secret Vault</button>
+        <button class="theme-btn" style="background-color: #f97316;" onclick="resetMusicData()">Reset Music Player</button>
+    </div>
+
+    <br><br>
+    <button class="theme-btn" style="background-color: #ef4444; width: 80%; max-width: 400px;" onclick="ghostMode()">
+        Launch about:blank
+    </button>
+</div>
+
+<script>
+    // 1. SETTINGS & UTILITY FUNCTIONS
+    function setTheme(name) {
+        localStorage.setItem('userTheme', name);
+        const root = document.documentElement;
+        const theme = themes[name] || themes.ocean;
+        for (let prop in theme) { root.style.setProperty(prop, theme[prop]); }
+    }
+
+
+
+    function clearVault() { 
+        localStorage.removeItem('vaultUnlocked'); 
+        alert("Vault Locked!"); 
+        location.reload(); 
+    }
+
+    function resetMusicData() { 
+        localStorage.removeItem('currentTrack'); 
+        localStorage.removeItem('isPlaying'); 
+        alert("Music reset!"); 
+        location.reload(); 
+    }
+
+    function ghostMode() {
+        const win = window.open();
+        if (!win) return alert("Please allow popups!");
+        const iframe = win.document.createElement('iframe');
+        iframe.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; border:none; margin:0; padding:0;";
+        iframe.src = window.location.href;
+        win.document.body.style.margin = "0";
+        win.document.body.appendChild(iframe);
+    }
+
+    // 2. SPORE SLIDER LOGIC
+    window.addEventListener('DOMContentLoaded', () => {
+        const slider = document.getElementById('sporeSlider');
+        const display = document.getElementById('sliderValue');
+        
+        // Sync with local storage on load
+        const savedCount = localStorage.getItem('sporeCount') || 50;
+        slider.value = savedCount;
+        display.textContent = savedCount;
+        window.sporeNum = parseInt(savedCount);
+
+        slider.addEventListener('input', (e) => {
+            const val = e.target.value;
+            display.textContent = val;
+            localStorage.setItem('sporeCount', val);
+            window.sporeNum = parseInt(val);
+            
+            // Send live update to spores.js
+            window.dispatchEvent(new CustomEvent('updateSpores', { detail: val }));
+        });
+    });
+</script>
+
+<script src="spores.js"></script>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

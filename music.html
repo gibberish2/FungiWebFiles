@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+
+<script> 
+    setTheme('ocean')
+</script>
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css">
+
+<style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --blur: 12px;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 128, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 200, 255, 0.05) 0%, transparent 20%);
+            color: white;
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            text-align: center;
+            padding: 60px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centers items horizontally */
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .glow-text {
+            font-size: 3rem;
+            background: linear-gradient(to bottom, #fff, var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--accent-color));
+            margin-bottom: 30px;
+        }
+
+        .image-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--blur));
+            -webkit-backdrop-filter: blur(var(--blur));
+            border-radius: 24px;
+            padding: 25px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            margin-bottom: 30px;
+            width: 90%;
+            height: 3vh;
+            max-width: 500px;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+        }
+        .image-container:hover{
+            border: solid var(--accent-color);
+            width: 91%;
+            height: 6vh;
+            
+        }
+
+        /* SEARCH UI CONTAINER */
+        .search-wrapper {
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        #search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(0, 255, 128, 0.2);
+        }
+
+        /* GRID CENTERED */
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+            margin-top: 20px;
+            justify-content: center; /* Centers the cards in the grid */
+        }
+
+        .track {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: left;
+        }
+
+        .track:hover {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .track-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* BUTTONS */
+        button {
+            background: var(--accent-color);
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        .popup-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            width: 20%;
+            height: 15vh;
+        }
+
+        #ytplayer {
+            position: fixed;
+            bottom: -100px;
+            left: -100px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="home.html" class="nav-link" title = "Brings you to the home page" alt = "home page navigation button">Home</a>
+        <a href="launcher.html" class="nav-link" title = "Brings you to the games page" alt = "games page navigation button">Games</a>
+        <a href="tools.html" class="nav-link" title = "Brings you to the tools page" alt = "tools page navigation button">Tools</a>
+        <a href="music.html" class="nav-link active" title = "Brings you to the music page" alt = "music page navigation button">Music</a>
+        <a href="about.html" class="nav-link" title = "Brings you to the about page" alt = "about page navigation button">About</a>
+        <a href="settings.html" class="nav-link" title = "Brings you to the settings page" alt = "settings page navigation button">Settings</a>
+    </div>
+</nav>
+
+<div class="content">
+    <h1 class="glow-text">Music</h1>
+
+    <div class="image-container">
+        <div id="now-playing">Select a song</div>
+    </div>
+
+    <!-- SEARCH UI -->
+    <div style="margin-bottom:20px; width:300px;">
+        <input id="search-input" class="search-box" placeholder="Search YouTube songs..." />
+        <button onclick="searchYouTube()" style="width:100%; margin-top:5px;">
+            Search
+        </button>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="popup-controls" style="margin-bottom:20px;">
+        <button onclick="skip(-10)">«</button>
+        <button onclick="togglePlay()">⏯</button>
+        <button onclick="skip(10)">»</button>
+    </div>
+
+    <div id="playlist" class="button-grid"></div>
+</div>
+
+<div id="ytplayer"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script src="music.js"></script>
+<script src="spores.js"></script>
+
+<!-- Cloudflare -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script>
+
+</body>
+</html>

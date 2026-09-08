@@ -1,0 +1,347 @@
+/* style.css - Clean & Fixed Version */
+:root {
+    --bg-color: #0f172a;
+    --nav-color: #1e293b;
+    --accent-color: #38bdf8;
+    --text-color: #B8B8B8;
+    --font-main: 'Comic Sans MS', 'Comic Sans', cursive;
+
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- NAVIGATION --- */
+.navbar {
+    position: sticky; 
+    top: 20px; 
+    width: 50%;
+    background-color: color-mix(in srgb, var(--nav-color), transparent 20%);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    height: 10vh; 
+    z-index: 1000;
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    border-radius: 21px;
+    border: 0.5px solid var(--accent-color);
+    transition: all ease-in-out 0.25s;
+}
+.navbar:hover {
+    width: 51.5%;
+    height: 10.5vh;
+    border-width: 5px;
+    
+}
+.nav-link {
+    text-decoration: none; 
+    color: var(--text-color);
+    padding: 10px 12.5px; 
+    font-weight: bold; 
+    transition: 0.35s;
+    border-radius: 6px;
+    margin: 0 5px;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: var(--accent-color);
+    color: #0f172a;
+    border-radius: 12px;
+}
+
+/* --- THEME BUTTONS --- */
+.theme-btn {
+    padding: 15px 25px;
+    margin: 10px;
+    min-width: 120px;
+    border: 2px solid var(--accent-color);
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: var(--nav-color);
+    transition: all 0.3s ease; 
+    display: inline-block;
+    outline: none;
+}
+
+.theme-btn:hover {
+    transform: scale(1.05);
+    background-color: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+}
+
+/* --- GLOBAL MUSIC POPUP --- */
+/* Popup Player */
+.popup-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 260px;
+    background: #111;
+    border: 2px solid var(--accent-color);
+    border-radius: 12px;
+    padding: 10px;
+    z-index: 999;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+}
+
+/* Header */
+.popup-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Thumbnail */
+.popup-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+/* Title */
+#popup-title {
+    font-size: 13px;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Controls */
+.popup-controls {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.popup-controls button {
+    background: #111;
+    border: 1px solid #444;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.popup-controls button:hover {
+    border-color: var(--accent-color);
+    color: var(--accent-color);
+}
+
+/* Resizer Grab Zones */
+.resizer { position: absolute; background: transparent; z-index: 10001; }
+.resizer.r { cursor: e-resize; width: 8px; right: 0; top: 0; height: 100%; }
+.resizer.l { cursor: w-resize; width: 8px; left: 0; top: 0; height: 100%; }
+.resizer.t { cursor: n-resize; height: 8px; top: 0; left: 0; width: 100%; }
+.resizer.b { cursor: s-resize; height: 8px; bottom: 0; left: 0; width: 100%; }
+.resizer.br { cursor: se-resize; width: 15px; height: 15px; right: 0; bottom: 0; }
+
+
+
+/* The "Half-Screen" Trigger */
+@media (max-height: 800px) {
+    #playlist {
+        max-height: 50vh; /* Limits popup to exactly half the screen height */
+        overflow-y: auto; /* Enables the custom scrollbar */
+    }
+}
+
+/* --- CONTROLS & UI --- */
+#music-popup button, 
+#music-popup span,
+#popup-title {
+    font-family: 'Comic Sans MS', cursive !important;
+}
+
+.popup-controls {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.ctrl-btn {
+    background: var(--accent-color);
+    border: none;
+    border-radius: 50%;
+    color: #0f172a;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: transform 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ctrl-btn:hover {
+    transform: scale(1.1);
+}
+
+#volume-slider {
+    width: 100%;
+    accent-color: var(--accent-color);
+    cursor: pointer;
+}
+
+/* Music/Game Grid Styles */
+.music-grid, .button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    width: 90%;
+    max-width: 1000px;
+}
+
+.music-card, .game-btn {
+    width: 100%;
+    aspect-ratio: 1 / 1 !important;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    background-size: cover;
+    background-position: center;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s;
+}
+
+.music-card:hover, .game-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px var(--accent-color);
+    filter: brightness(1.2);
+}
+
+.music-card:active, .game-btn:active {
+    transform: scale(0.98);
+}
+
+
+
+
+
+        .loading-text {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: lowercase;
+        }
+.loader {
+    --main-size: 4em;
+    --text-color: var(--accent-color);
+    /* Changed shadow to a transparent version of the accent color for better blending */
+    --shadow-color: color-mix(in srgb, var(--accent-color), black 40%);
+    --shine-color: rgba(255, 255, 255, 0.25);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    user-select: none;
+    position: relative;
+    font-size: var(--main-size);
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--text-color);
+    width: 7.3em;
+    height: 1em;
+    filter: drop-shadow(0 0 0.05em var(--accent-color));
+}
+
+.loader .text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    position: absolute;
+}
+
+/* Base clipping and sizing for text slices */
+.loader .text:nth-child(1) { clip-path: polygon(0% 0%, 11.11% 0%, 11.11% 100%, 0% 100%); font-size: calc(var(--main-size) / 20); margin-left: -2.1em; opacity: 0.6; }
+.loader .text:nth-child(2) { clip-path: polygon(11.11% 0%, 22.22% 0%, 22.22% 100%, 11.11% 100%); font-size: calc(var(--main-size) / 16); margin-left: -0.98em; opacity: 0.7; }
+.loader .text:nth-child(3) { clip-path: polygon(22.22% 0%, 33.33% 0%, 33.33% 100%, 22.22% 100%); font-size: calc(var(--main-size) / 13); margin-left: -0.33em; opacity: 0.8; }
+.loader .text:nth-child(4) { clip-path: polygon(33.33% 0%, 44.44% 0%, 44.44% 100%, 33.33% 100%); font-size: calc(var(--main-size) / 11); margin-left: -0.05em; opacity: 0.9; }
+.loader .text:nth-child(5) { clip-path: polygon(44.44% 0%, 55.55% 0%, 55.55% 100%, 44.44% 100%); font-size: calc(var(--main-size) / 10); margin-left: 0em; opacity: 1; }
+.loader .text:nth-child(6) { clip-path: polygon(55.55% 0%, 66.66% 0%, 66.66% 100%, 55.55% 100%); font-size: calc(var(--main-size) / 11); margin-left: 0.05em; opacity: 0.9; }
+.loader .text:nth-child(7) { clip-path: polygon(66.66% 0%, 77.77% 0%, 77.77% 100%, 66.66% 100%); font-size: calc(var(--main-size) / 13); margin-left: 0.33em; opacity: 0.8; }
+.loader .text:nth-child(8) { clip-path: polygon(77.77% 0%, 88.88% 0%, 88.88% 100%, 77.77% 100%); font-size: calc(var(--main-size) / 16); margin-left: 0.98em; opacity: 0.7; }
+.loader .text:nth-child(9) { clip-path: polygon(88.88% 0%, 100% 0%, 100% 100%, 88.88% 100%); font-size: calc(var(--main-size) / 20); margin-left: 2.1em; opacity: 0.6; }
+
+.loader .text span {
+    animation: scrolling 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite, shadow 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite;
+}
+
+/* Gradients set to use Accent Color */
+.loader .text:nth-child(1) span { background: linear-gradient(to right, var(--accent-color) 4%, var(--shadow-color) 7%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(2) span { background: linear-gradient(to right, var(--accent-color) 9%, var(--shadow-color) 13%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(3) span { background: linear-gradient(to right, var(--accent-color) 15%, var(--shadow-color) 18%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(4) span { background: linear-gradient(to right, var(--accent-color) 20%, var(--shadow-color) 23%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(6) span { background: linear-gradient(to right, var(--shadow-color) 29%, var(--accent-color) 32%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(7) span { background: linear-gradient(to right, var(--shadow-color) 34%, var(--accent-color) 37%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(8) span { background: linear-gradient(to right, var(--shadow-color) 39%, var(--accent-color) 42%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+.loader .text:nth-child(9) span { background: linear-gradient(to right, var(--shadow-color) 45%, var(--accent-color) 48%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+
+.loader .line {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    height: 0.05em;
+    width: calc(var(--main-size) / 2);
+    margin-top: 0.9em;
+    border-radius: 0.05em;
+}
+
+.loader .line::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: var(--accent-color);
+    opacity: 0.3;
+}
+
+.loader .line::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: var(--accent-color);
+    border-radius: 0.05em;
+    transform: translateX(-90%);
+    animation: wobble 2s cubic-bezier(0.5, 0.8, 0.5, 0.2) infinite;
+}
+
+@keyframes wobble { 0% { transform: translateX(-90%); } 50% { transform: translateX(90%); } 100% { transform: translateX(-90%); } }
+@keyframes scrolling { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@keyframes shadow { 0% { background-position: -98% 0; } 100% { background-position: 102% 0; } }

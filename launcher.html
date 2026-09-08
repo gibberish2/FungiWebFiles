@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Launcher | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+    
+<script> 
+    setTheme('ocean') // runs BEFORE theme.js loads 
+</script>
+<script src="theme.js"></script>
+
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+     *{
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+        }
+        body { font-family: 'Comic Sans MS', cursive !important; }
+        #gameSearch {
+            margin: 30px 0;
+            padding: 15px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+            font-family: inherit;
+            background: var(--nav-color);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .button-grid {
+            margin-top: 75px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+            gap: 25px;
+            width: 90%;
+            max-width: 2000px;
+            margin-bottom: 50px;
+        }
+
+        .game-btn {
+            aspect-ratio: 1 / 1;
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            border-radius:15px;
+            flex-direction: column; /* Stacks image on top, banner on bottom */
+            overflow: hidden;
+            padding: 0;
+            background: none; /* We move the image to a child div */
+        }
+
+        .game-btn:hover { transform: scale(1.05); }
+
+        /* The Logo Area */
+        .game-img {
+            flex-grow: 1; /* Takes up all available space above the banner */
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* The Title Banner */
+        .game-banner {
+            width: 100%;
+            background-color: var(--nav-color); /* Uses your background color variable */
+            color: white;
+            padding: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1); /* Optional: slight separation line */
+            border-radius: 5px;
+            /* ADD THIS LINE BELOW: It makes the movement smooth */
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* 2. ADD THIS NEW BLOCK: It moves the banner when you hover the button */
+        .game-banner:hover {
+            transform: translateY(-8px); /* Moves it up */
+            background-color: var(--nav-color); /* Changes color slightly */
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.3); /* Adds a shadow for depth */
+        }
+        /* IMAGE URLS KEPT EXACTLY AS REQUESTED */
+        .tiny-fishing { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfvyGOC8uwQX8xTL2cbsZabo_ehdkTYwA0kg&s'); }
+        .volley-random { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://play-lh.googleusercontent.com/VeKAevaOjPlcyCtOpFY1h6SjwEjnu4ryG3xQ_qw1Muuhrg8pqwhl1aPjWovMkjc0Rc4'); }
+        .drift-boss { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/baf55f009fd63dd63c760a5dcfe79615/drift-boss.png'); }
+        .pixel-shooter { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://play-lh.googleusercontent.com/oo9vm9LgWONlfjDJMHtO9Zm9taVs1pVnnFB-bfPyNH_U-_bp3QWzh9XBsOABp2h-rQ'); }
+        .cut-the-rope { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://cdn.jim-nielsen.com/ios/512/cut-the-rope-2011-06-16.png?rf=512'); }
+        .doodle-jump { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://codehs.com/uploads/536a29c8d579b7923d50a73325e0c21f'); }
+        .skibidi-toilet-io { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF8SC-oOpu7I0-p7Tcz7MIQaxv_uOl2G9Ltw&s'); }
+        .basket-ball-stars { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://codehs.com/uploads/41b2d3d16dab33f1eb60c00b1715a7ad'); }
+        .crossy-road { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://cdn.jim-nielsen.com/ios/512/crossy-road-2022-05-13.png?rf=1024'); }
+        .basket-random { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://play-lh.googleusercontent.com/gP8T5Z1O-ngxIloiwcBZzrzyLPYDp0R_1BDNKUDZboIRPVImeyWI8-7aExvB9gAGNKc'); }
+        .boxing-random { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://play-lh.googleusercontent.com/ZuMoNX6xiIBRwdtSL-FN0xCdXyahk8SRaPZ5_4HzkdQEp2Tm_GAsha9OcsRoSDgSw8Y'); }
+        .ovo { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQCbUe4nWzwZ5uf-84BWc4JGclPneA8SBstg&s'); }
+        .snow-rider-3d { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVDJCeFfzhvhhGkf4xJERXF1ePRMOuBKqYPw&s'); }
+        .minecraft-19 { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_DLXb7rd3qS7aCagDrv0sDSNGuEFbCNkuaw&s'); }
+        .fnaf-1 { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://i.redd.it/4z6tarxh2h811.jpg'); }
+        .fnaf-4 { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co8efh.jpg'); }
+        .burrito-bison { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://juicybeast.com/press/burrito_bison_launcha_libre/images/icon.png'); }
+        .poly-track { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://poly-track.gitlab.io/data/image/how-to-play-polytrack-banner-polytrackgameio.png'); }
+        .cookie-clicker { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://sm.ign.com/ign_nordic/cover/c/cookie-cli/cookie-clicker_evgt.jpg'); }
+        .ragdoll-hit { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWe9VwBF9BbkLvvzaMz2ahFf4EsGuF1iGxMA&s'); }
+        .ragdoll-archers { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://imgs.crazygames.com/ragdoll-archers_1x1/20250926080758/ragdoll-archers_1x1-cover?format=auto&quality=100&metadata=none&width=1200'); }
+        .eggy-car { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4dYJC7FKMVAJiuLDNh1EZDjuVyZYSNSWIqQ&s'); }
+        .paperio2 { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://lh3.googleusercontent.com/-K4ZR3Fw0qAFIbtksj9BqeWLxmSqU0JDLjGcniMurcSVOhMT7MVAce2U6hjF0C36x4Mn=s180'); }
+        .space-waves { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSlvpINlHVXkHS4cpT7NznJUU6LA6B1WsDhkw&s'); }
+        .stickman-hook { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://play-lh.googleusercontent.com/yXqBI1Vb1b-xjwmXLE2T7FQbgHIxfvjze1b6jO2aLHfy8Y8ta7NFSEVqZoPHtM2Ajyrl'); }
+        .dumb-ways-to-die { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/12e81aea-d4be-453c-aa5c-b96a53f96060/deqlsdf-061655e5-682b-47dc-9358-3ddc56086b69.png/v1/fill/w_894,h_894,q_70,strp/dumb_ways_to_die_app_icon__grassland__by_kirbystarwarrior123_deqlsdf-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTE1MiIsInBhdGgiOiIvZi8xMmU4MWFlYS1kNGJlLTQ1M2MtYWE1Yy1iOTZhNTNmOTYwNjAvZGVxbHNkZi0wNjE2NTVlNS02ODJiLTQ3ZGMtOTM1OC0zZGRjNTYwODZiNjkucG5nIiwid2lkdGgiOiI8PTExNTIifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.QmbCKqXzMw04LeG1G9CpDUmrB4bRlo3YBC6rK4Vn4vI'); }
+        .vex { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://tcf.admeen.org/game/12500/12280/400x246/vex.webp'); }
+        .jacksmith { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-ESf5E7hQr_Z0HFJQjO71btTob8wWWNOW-g&s'); }
+        .drive-mad { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://play-lh.googleusercontent.com/vJwCnKoOl9hnyPOphqx0pXXQXRhcX9f747VaJ1GRUldEKTYclYEoZZC0pkgOw3hPXqM'); }
+        .retro-bowl { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://play-lh.googleusercontent.com/WRM5Y1xZmzcCP1YtO5zl6G2g7CU5c5ZfjX4UVrgi1bpNgkfy-wuB-bQx3kkeRfaGYQ=w600-h300-pc0xffffff-pd'); }
+
+        .papa-bakeria { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.launchbox-app.com/bc0e3aab-7ec8-4edd-a4d2-629d38793309.jpg'); }
+        .papa-pastaria { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://cdn2.steamgriddb.com/thumb/e22a7a52f68f927c774ade7bb02d24ff.jpg'); }
+        .papa-cupcakeria { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://imgs.crazygames.com/auto-covers/papas-cupcakeria_1x1.png?format=auto&quality=100&metadata=none&width=1200'); }
+
+        .clicker {background-image: linear-gradient(var(--accent-color), var(--accent-color));}
+
+        footer { text-align: center; padding: 40px; font-size: 14px; color: var(--text-color); }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="home.html" class="nav-link" title = "Brings you to the home page" alt = "home page navigation button">Home</a>
+        <a href="launcher.html" class="nav-link active" title = "Brings you to the games page" alt = "games page navigation button">Games</a>
+        <a href="tools.html" class="nav-link" title = "Brings you to the tools page" alt = "tools page navigation button">Tools</a>
+        <a href="music.html" class="nav-link" title = "Brings you to the music page" alt = "music page navigation button">Music</a>
+        <a href="about.html" class="nav-link" title = "Brings you to the about page" alt = "about page navigation button">About</a>
+        <a href="settings.html" class="nav-link" title = "Brings you to the settings page" alt = "settings page navigation button">Settings</a>
+    </div>
+</nav>
+
+
+<div class="button-grid" id="grid">
+            <button class="game-btn" onclick="location.href='tiny_fishing.html'">
+                <div class="game-img tiny-fishing"></div>
+                <div class="game-banner">Tiny Fishing</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='volley_random.html'">
+                <div class="game-img volley-random"></div>
+                <div class="game-banner">Volley Random</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='drift_boss.html'">
+                <div class="game-img drift-boss"></div>
+                <div class="game-banner">Drift Boss</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='pixel_shooter.html'">
+                <div class="game-img pixel-shooter"></div>
+                <div class="game-banner">Pixel Shooter</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='cut_the_rope.html'">
+                <div class="game-img cut-the-rope"></div>
+                <div class="game-banner">Cut the Rope</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='doodle_jump.html'">
+                <div class="game-img doodle-jump"></div>
+                <div class="game-banner">Doodle Jump</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='skibidi_toilet.html'">
+                <div class="game-img skibidi-toilet-io"></div>
+                <div class="game-banner">Skibidi Toilet.io</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='basket_ball_stars.html'">
+                <div class="game-img basket-ball-stars"></div>
+                <div class="game-banner">Basketball Stars</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='crossy_road.html'">
+                <div class="game-img crossy-road"></div>
+                <div class="game-banner">Crossy Road</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='basket_random.html'">
+                <div class="game-img basket-random"></div>
+                <div class="game-banner">Basket Random</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='boxing_random.html'">
+                <div class="game-img boxing-random"></div>
+                <div class="game-banner">Boxing Random</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='ovo.html'">
+                <div class="game-img ovo"></div>
+                <div class="game-banner">OVO</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='snow_rider_3d.html'">
+                <div class="game-img snow-rider-3d"></div>
+                <div class="game-banner">Snow Rider 3D</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='minecraft_1.9.html'">
+                <div class="game-img minecraft-19"></div>
+                <div class="game-banner">Minecraft 1.8</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='fnaf.html'">
+                <div class="game-img fnaf-1"></div>
+                <div class="game-banner">Five Nights At Freddy's 1</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='fnaf4.html'">
+                <div class="game-img fnaf-4"></div>
+                <div class="game-banner">Five Nights At Freddy's 4</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='papa_bakeria.html'">
+                <div class="game-img papa-bakeria"></div>
+                <div class="game-banner">Papa's Bakeria</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='papa_pastaria.html'">
+                <div class="game-img papa-pastaria"></div>
+                <div class="game-banner">Papa's Pastaria</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='papa_cupcakeria.html'">
+                <div class="game-img papa-cupcakeria"></div>
+                <div class="game-banner">Papa's Cupcakeria</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='poly_track.html'">
+                <div class="game-img poly-track"></div>
+                <div class="game-banner">Poly Track</div>
+            
+            </button>
+            <button class="game-btn" onclick="location.href='burrito_bison.html'">
+                <div class="game-img burrito-bison"></div>
+                <div class="game-banner">Burrito Bison</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='cookie_clicker.html'">
+                <div class="game-img cookie-clicker"></div>
+                <div class="game-banner">Cookie Clicker</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='ragdoll_hit.html'">
+                <div class="game-img ragdoll-hit"></div>
+                <div class="game-banner">Ragdoll Hit</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='ragdoll_archers.html'">
+                <div class="game-img ragdoll-archers"></div>
+                <div class="game-banner">Ragdoll Archers</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='eggy_car.html'">
+                <div class="game-img eggy-car"></div>
+                <div class="game-banner">Eggy Car</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='paperio2.html'">
+                <div class="game-img paperio2"></div>
+                <div class="game-banner">Paper.io 2</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='space_waves.html'">
+                <div class="game-img space-waves"></div>
+                <div class="game-banner">Space Waves</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='stickman_hook.html'">
+                <div class="game-img stickman-hook"></div>
+                <div class="game-banner">Stickman Hook
+                <h6>MAY FREEZE TEMPORARILY</h6></div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='dumb_ways_to_die.html'">
+                <div class="game-img dumb-ways-to-die"></div>
+                <div class="game-banner">Dumb Ways To Die</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='vex.html'">
+                <div class="game-img vex"></div>
+                <div class="game-banner">Vex</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='jacksmith.html'">
+                <div class="game-img jacksmith"></div>
+                <div class="game-banner">Jacksmith</div>
+            </button>
+
+            <button class="game-btn" onclick="location.href='drive_mad.html'">
+                <div class="game-img drive-mad"></div>
+                <div class="game-banner">Drive Mad</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='retro_bowl.html'">
+                <div class="game-img retro-bowl"></div>
+                <div class="game-banner">Retro Bowl</div>
+            </button>
+            
+            <button class="game-btn" onclick="location.href='clicker.html'">
+                <div class="game-img clicker"></div>
+                <div class="game-banner">Homemade Clicker</div>
+            </button>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+    <script src="spores.js"></script>
+
+
+<!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

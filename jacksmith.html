@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jacksmith | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+
+    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+
+    <script> 
+        if (typeof setTheme !== 'function') {
+            window.setTheme = function(t) { console.log("Theme set to:", t); };
+        }
+        setTheme('ocean'); 
+    </script>
+    <script src="theme.js"></script>
+    
+    <style>
+        :root {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+        }
+
+        /* Essential layout to make the game full screen */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 125%;
+            height: 125%;
+            overflow: hidden;
+            background-color: #111;
+        }
+
+        #ruffle-container {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        /* --- YOUR ORIGINAL LOADER STYLES (UNTOUCHED) --- */
+        .loading-text {
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: lowercase;
+        }
+        .loader {
+            --main-size: 4em;
+            --text-color: var(--accent-color);
+            --shadow-color: color-mix(in srgb, var(--accent-color), black 40%);
+            --shine-color: rgba(255, 255, 255, 0.25);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            user-select: none;
+            position: relative;
+            font-size: var(--main-size);
+            font-weight: 900;
+            text-transform: uppercase;
+            color: var(--text-color);
+            width: 7.3em;
+            height: 1em;
+            filter: drop-shadow(0 0 0.05em var(--accent-color));
+        }
+        .loader .text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            position: absolute;
+        }
+        .loader .text:nth-child(1) { clip-path: polygon(0% 0%, 11.11% 0%, 11.11% 100%, 0% 100%); font-size: calc(var(--main-size) / 20); margin-left: -2.1em; opacity: 0.6; }
+        .loader .text:nth-child(2) { clip-path: polygon(11.11% 0%, 22.22% 0%, 22.22% 100%, 11.11% 100%); font-size: calc(var(--main-size) / 16); margin-left: -0.98em; opacity: 0.7; }
+        .loader .text:nth-child(3) { clip-path: polygon(22.22% 0%, 33.33% 0%, 33.33% 100%, 22.22% 100%); font-size: calc(var(--main-size) / 13); margin-left: -0.33em; opacity: 0.8; }
+        .loader .text:nth-child(4) { clip-path: polygon(33.33% 0%, 44.44% 0%, 44.44% 100%, 33.33% 100%); font-size: calc(var(--main-size) / 11); margin-left: -0.05em; opacity: 0.9; }
+        .loader .text:nth-child(5) { clip-path: polygon(44.44% 0%, 55.55% 0%, 55.55% 100%, 44.44% 100%); font-size: calc(var(--main-size) / 10); margin-left: 0em; opacity: 1; }
+        .loader .text:nth-child(6) { clip-path: polygon(55.55% 0%, 66.66% 0%, 66.66% 100%, 55.55% 100%); font-size: calc(var(--main-size) / 11); margin-left: 0.05em; opacity: 0.9; }
+        .loader .text:nth-child(7) { clip-path: polygon(66.66% 0%, 77.77% 0%, 77.77% 100%, 66.66% 100%); font-size: calc(var(--main-size) / 13); margin-left: 0.33em; opacity: 0.8; }
+        .loader .text:nth-child(8) { clip-path: polygon(77.77% 0%, 88.88% 0%, 88.88% 100%, 77.77% 100%); font-size: calc(var(--main-size) / 16); margin-left: 0.98em; opacity: 0.7; }
+        .loader .text:nth-child(9) { clip-path: polygon(88.88% 0%, 100% 0%, 100% 100%, 88.88% 100%); font-size: calc(var(--main-size) / 20); margin-left: 2.1em; opacity: 0.6; }
+        .loader .text span { animation: scrolling 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite, shadow 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite; }
+        .loader .text:nth-child(1) span { background: linear-gradient(to right, var(--accent-color) 4%, var(--shadow-color) 7%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+        .loader .text:nth-child(2) span { background: linear-gradient(to right, var(--accent-color) 9%, var(--shadow-color) 13%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+        .loader .text:nth-child(3) span { background: linear-gradient(to right, var(--accent-color) 15%, var(--shadow-color) 18%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+        .loader .text:nth-child(4) span { background: linear-gradient(to right, var(--accent-color) 20%, var(--shadow-color) 23%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+        .loader .text:nth-child(6) span { background: linear-gradient(to right, var(--shadow-color) 29%, var(--accent-color) 32%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+        .loader .text:nth-child(7) span { background: linear-gradient(to right, var(--shadow-color) 34%, var(--accent-color) 37%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+        .loader .text:nth-child(8) span { background: linear-gradient(to right, var(--shadow-color) 39%, var(--accent-color) 42%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+        .loader .text:nth-child(9) span { background: linear-gradient(to right, var(--shadow-color) 45%, var(--accent-color) 48%); background-size: 200% auto; -webkit-background-clip: text; color: transparent; }
+        
+        @keyframes scrolling { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes shadow { 0% { background-position: -98% 0; } 100% { background-position: 102% 0; } }
+
+        /* Return Button */
+        .back-launcher-btn {
+            position: fixed;
+            bottom: 8px;
+            left: 10px;
+            z-index: 100000;
+            padding: 8px 25px;
+            background-color: rgba(0, 0, 25, 0.5);
+            color: white;
+            border: 2px solid white;
+            border-radius: 50px;
+            font-family: 'Comic Sans MS', cursive;
+            font-weight: bold;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+            transition: transform 0.2s;
+        }
+        .back-launcher-btn:hover { transform: scale(1.1); }
+    </style>
+</head>
+<body>
+
+<body>
+    <div id="loader-container" style="background-color: var(--bg-color, #111); display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999;">
+        <!-- New Advanced Animated Loader -->
+        <div class="loader">
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+            <div class="text"><span>LOADING</span></div>
+        </div>
+
+        <!-- Centered Subtext -->
+        <div class="loading-text" style="text-align: center; margin-top: 20px; color: var(--accent-color); font-family: 'Comic Sans MS', cursive;">
+            Loading... <br>
+            Onward, to battle!!!⚔<br>
+            Loading Animation from 
+            <a href="https://uiverse.io/andrew-manzyk/unlucky-mouse-21" target="_blank">UIverse</a>
+        </div>
+    </div>
+
+    <div id="ruffle-container"></div>
+
+    <button class="back-launcher-btn" onclick="window.location.href='launcher.html'">← Return to Launcher</button>
+
+    <script>
+        // Using the jsDelivr link for the SWF
+        const swfUrl = "https://raw.githubusercontent.com/dadsstash/swf-files/93b7a945ccbd0b0dd9ae1028df26f13928020dfa/jacksmith.swf";
+
+        async function initRuffle() {
+            window.RufflePlayer = window.RufflePlayer || {};
+            const ruffle = window.RufflePlayer.newest();
+            const player = ruffle.createPlayer();
+            const container = document.getElementById("ruffle-container");
+            
+            container.appendChild(player);
+            player.style.width = "100%";
+            player.style.height = "100%";
+
+            try {
+                await player.load(swfUrl);
+                // Game loaded! Hide the OG loader
+                const loader = document.getElementById("loader-container");
+                loader.style.opacity = "0";
+                setTimeout(() => { loader.style.display = "none"; }, 500);
+            } catch (err) {
+                console.error("Ruffle Error:", err);
+                document.querySelector(".loading-text").innerHTML = "Error loading Flash game.<br>Check console for details.";
+            }
+        }
+
+        window.addEventListener("DOMContentLoaded", initRuffle);
+    </script>
+    <script src="spores.js"></script>
+</body>
+</html>

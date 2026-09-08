@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Love Tester | Fungi</title>
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+<script> 
+    setTheme('ocean') // runs BEFORE theme.js loads 
+</script>
+<script src="theme.js"></script>
+
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* GLOBAL THEME SYNC */
+        body {
+            background-color: var(--bg-color);
+            color: white;
+            margin: 0;
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+            transition: background-color 0.3s ease;
+        }
+
+        .content {
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .glow-text {
+            color: #fff;
+            text-shadow: 0 0 7px var(--accent-color), 0 0 10px var(--accent-color), 0 0 21px var(--accent-color);
+            animation: pulse-glow 2s infinite alternate;
+        }
+
+        @keyframes pulse-glow {
+            from { text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color); }
+            to { text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color), 0 0 30px var(--accent-color); }
+        }
+
+        .image-container {
+            background-color: rgba(128, 128, 128, 0.4);
+            border-radius: 15px;
+            padding: 15px;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            animation: float 4s ease-in-out infinite;
+        }
+    
+        .image-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px var(--accent-color);
+            animation-play-state: paused;
+        }
+    
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .theme-btn {
+            padding: 12px 24px;
+            margin: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+            color: white;
+            background-color: var(--accent-color);
+            position: relative;
+            transition: transform 0.2s, filter 0.2s, width 0.4s ease, height 0.4s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90vw;
+            white-space: nowrap;
+            overflow: hidden;
+            padding: 12px 24px;
+            width: fit-content;
+            min-width: 150px; /* Optional: keeps it from getting too tiny */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap; /* Keeps text on one line during the slide */
+            overflow: hidden;
+}
+}
+            
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.05);
+            filter: brightness(1.2);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+
+        #btnText { 
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; 
+            display: inline-block;
+        }
+        
+        .text-hidden { 
+            opacity: 0; 
+            transform: translateY(5px); 
+        }
+        :root {
+            interpolate-size: allow-keywords; /* Enables smooth 'auto' transitions */
+        }
+        /* Apply to literally every element on the page */
+* {
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive !important;
+}
+
+/* Specifically force inputs and buttons to inherit the font */
+input, button, select, textarea {
+    font-family: inherit;
+    font-size: inherit; /* Optional: keeps them from getting tiny */
+}
+.heart-container {
+    
+}
+
+        /* MUSIC POPUP STYLE */
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="home.html" class="nav-link" title = "Brings you to the home page" alt = "home page navigation button">Home</a>
+        <a href="launcher.html" class="nav-link" title = "Brings you to the games page" alt = "games page navigation button">Games</a>
+        <a href="tools.html" class="nav-link active" title = "Brings you to the tools page" alt = "tools page navigation button">Tools</a>
+        <a href="music.html" class="nav-link" title = "Brings you to the music page" alt = "music page navigation button">Music</a>
+        <a href="about.html" class="nav-link" title = "Brings you to the about page" alt = "about page navigation button">About</a>
+        <a href="settings.html" class="nav-link" title = "Brings you to the settings page" alt = "settings page navigation button">Settings</a>
+    </div>
+</nav>
+<!-- GLOBAL MUSIC POPUP -->
+<div id="music-popup" class="popup-player">
+    <div class="resizer t"></div><div class="resizer b"></div>
+    <div class="resizer l"></div><div class="resizer r"></div>
+    <div class="resizer tl"></div><div class="resizer tr"></div>
+    <div class="resizer bl"></div><div class="resizer br"></div>
+
+    <div class="popup-header" style="cursor: move;">
+        <span id="popup-title">Nothing Playing</span>
+        <button onclick="togglePopup(false)" style="background:#DE3412; border-radius:5px; color:white; cursor:pointer; font-weight:bold;">×</button>
+    </div>
+    
+    <div class="popup-controls">
+        <button onclick="skip(-10)" class="ctrl-btn">«</button>
+        <button id="master-play-btn" onclick="togglePlay()" class="ctrl-btn">▶</button>
+        <button onclick="skip(10)" class="ctrl-btn">»</button>
+    </div>
+
+    <!-- Fix: forced overflow-x hidden and enabled y-axis scrollbar -->
+    <div id="playlist" style="margin-top:10px; max-height: 50vh; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 10px; width: 100%; box-sizing: border-box;"></div>
+
+    <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px; width: 100%;">
+        <span>🎚</span>
+        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5" oninput="adjustVolume(this.value)" style="flex-grow: 1; accent-color: var(--accent-color);">
+    </div>
+</div>
+<!-- LOVE TESTER SECTION -->
+<div class="content" style="margin-top: 50px;">
+    <h2 class="glow-text">Fungi Love Tester</h2>
+    
+    <div style="display: flex; gap: 10px; margin-bottom: 20px; justify-content: center;">
+        <input type="text" id="name1" placeholder="Person 1 Name" style="padding: 10px; border-radius: 5px; border: none;">
+        <input type="text" id="name2" placeholder="Person 2 Name" style="padding: 10px; border-radius: 5px; border: none;">
+    </div>
+
+    <button class="theme-btn" onclick="calculateLove()">Calculate Compatibility</button>
+
+    <div class="heart-container" style="position: relative; margin-top: 30px; width: 250px; height: 250px; display: flex; align-items: center; justify-content: center;">
+        <svg id="heart-svg" viewBox="0 0 32 29.6" style="width: 100%; height: 100%; overflow: visible; transform-origin: center; animation: heartPulse 2s infinite ease-in-out; backdrop-filter:blur(5px)">
+            <defs>
+                <clipPath id="heartClip">
+                    <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
+                    c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z" />
+                </clipPath>
+            </defs>
+            <path d="M23.6,0c-3.4,0-6.3,2.7-7.6,5.6C14.7,2.7,11.8,0,8.4,0C3.8,0,0,3.8,0,8.4c0,9.4,9.5,11.9,16,21.2
+            c6.1-9.3,16-12.1,16-21.2C32,3.8,28.2,0,23.6,0z" fill="#333" />
+            <rect id="heart-fill" x="0" y="30" width="32" height="32" fill="var(--accent-color)" clip-path="url(#heartClip)" style="transition: y 1.5s cubic-bezier(0.4, 0, 0.2, 1);" />
+        </svg>
+        <div id="love-percent" style="position: absolute; font-size: 2.5rem; font-weight: bold; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); pointer-events: none; z-index: 10;">0%</div>
+    </div>
+</div>
+
+<style>
+@keyframes heartPulse {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.1); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+}
+</style>
+
+<script>
+let previousValue = 0;
+
+function calculateLove() {
+    const n1 = document.getElementById('name1').value.trim().toLowerCase();
+    const n2 = document.getElementById('name2').value.trim().toLowerCase();
+
+    if (!n1 || !n2) return;
+
+    // Seeded random logic
+    const combined = [n1, n2].sort().join('');
+    let hash = 0;
+    for (let i = 0; i < combined.length; i++) {
+        hash = ((hash << 5) - hash) + combined.charCodeAt(i);
+        hash |= 0;
+    }
+    const newValue = Math.abs(hash % 101);
+
+    // 1. Move liquid
+    const fill = document.getElementById('heart-fill');
+    fill.setAttribute('y', 30 - (30 * (newValue / 100)));
+
+    // 2. Adjust Heartbeat Speed (Fast for love, slow for meh)
+    const svg = document.getElementById('heart-svg');
+    const speed = 2.0 - (1.5 * (newValue / 100)); 
+    svg.style.animationDuration = speed + 's';
+
+    // 3. Glide the numbers
+    animateValue(previousValue, newValue, 1500);
+    
+    previousValue = newValue;
+}
+
+function animateValue(start, end, duration) {
+    const obj = document.getElementById("love-percent");
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 3); // Smooth ease-out
+        const current = Math.floor(easeProgress * (end - start) + start);
+        obj.innerHTML = current + "%";
+        if (progress < 1) {
+            window.requestAnimationFrame(step);
+        }
+    };
+    window.requestAnimationFrame(step);
+}
+</script>
+<script src="spores.js"></script>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

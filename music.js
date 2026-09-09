@@ -45,11 +45,11 @@ window.searchYouTube = async function () {
     const query = document.getElementById("search-input").value;
     if (!query) return;
 
-    const API_KEY = "AIzaSyDB3ijq7TdKKElkH16woL4htaUCCHVVCB4";
+    const blopyblim = "AIzaSyDB3ijq7TdKKElkH16woL4htaUCCHVVCB4";
 
     try {
         const res = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(query)}&maxResults=10&key=${API_KEY}`
+            `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(query)}&maxResults=10&key=${blopyblim}`
         );
 
         const data = await res.json();

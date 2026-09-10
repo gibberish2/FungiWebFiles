@@ -22,7 +22,7 @@ body {
 
 /* --- NAVIGATION --- */
 .navbar {
-    position: sticky; 
+    position: fixed; 
     bottom: 20px; 
     width: 50%;
     background-color: color-mix(in srgb, var(--nav-color), transparent 20%);
@@ -35,7 +35,7 @@ body {
     align-items: center;
     border-radius: 21px;
     border: 0.5px solid var(--accent-color);
-    transition: all ease-in-out 0.25s;
+    transition: transform 0.25s ease-in-out, border-width 0.25s ease-in-out;
 }
 .navbar:hover {
     width: 51.5%;

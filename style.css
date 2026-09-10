@@ -35,7 +35,7 @@ body {
     align-items: center;
     border-radius: 21px;
     border: 0.5px solid var(--accent-color);
-    transition: transform 0.25s ease-in-out, border-width 0.25s ease-in-out;
+    transition: all ease-in-out 0.25s;
 }
 .navbar:hover {
     width: 51.5%;

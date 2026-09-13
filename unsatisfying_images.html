@@ -30,10 +30,15 @@ setTheme('ocean') // runs BEFORE theme.js loads
         a {
             color: var(--accent-color); 
         }
+        .grid-container {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr; 
+          gap: 20px; 
+        }
         .pictures {
             max-width: 20%; 
             height: auto;
-            transition: max-width 0.5s ease in-and-out; 
+            transition: max-width 0.5s ease; 
         }
         .pictures:hover {
             max-width: 40%;
@@ -56,8 +61,8 @@ setTheme('ocean') // runs BEFORE theme.js loads
 <h4>Found from the Basement of the internet</h4>
 <br><br><br><br>
 <img src="https://cdn.jsdelivr.net/gh/gibberish2/fungiwebfiles/unsatisfying_images/linebowl.jpg" alt="Misaligned lines on a art piece of a bowl" class="pictures">
-<img src="https://cdn.jsdelivr.net/gh/gibberish2/fungiwebfiles/unsatisfying_images/misalignedmanhole.jpg" alt="Manhole stlightly in the wrong direction so that the road marker over it isn't straight">
-<img src="https://cdn.jsdelivr.net/gh/gibberish2/fungiwebfiles/unsatisfying_images/misalignedtrafficcone.jpg" alt="A traffic cone not perfectly in the center of the diagonals in the road">
+<img src="https://cdn.jsdelivr.net/gh/gibberish2/fungiwebfiles/unsatisfying_images/misalignedmanhole.jpg" alt="Manhole stlightly in the wrong direction so that the road marker over it isn't straight" class="pictures">
+<img src="https://cdn.jsdelivr.net/gh/gibberish2/fungiwebfiles/unsatisfying_images/misalignedtrafficcone.jpg" alt="A traffic cone not perfectly in the center of the diagonals in the road" class="pictures">
 
 
 

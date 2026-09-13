@@ -15,12 +15,29 @@ setTheme('ocean') // runs BEFORE theme.js loads
     <link rel="stylesheet" href="style.css">
 
     <style>
-        body { background-color: var(--bg-color); color: white; margin: 0;}
-        .content { text-align: center; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
-        .home-img { border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 20px; max-width: 100%; border: 2px solid var(--accent-color); }
-        h1 { font-size: 48px; margin-bottom: 10px; }
-        a { color: var(--accent-color); }
-      
+        body {
+            background-color: var(--bg-color); color: white; margin: 0;
+        }
+        .content {
+            text-align: center; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; 
+        }
+        .home-img {
+            border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-top: 20px; max-width: 100%; border: 2px solid var(--accent-color); 
+        }
+        h1 {
+            font-size: 48px; margin-bottom: 10px; 
+        }
+        a {
+            color: var(--accent-color); 
+        }
+        .pictures {
+            max-width: 20%; 
+            height: auto;
+            transition: max-width 0.5s ease in-and-out; 
+        }
+        .pictures:hover {
+            max-width: 40%;
+        }
     </style>
 </head>
 <body>
@@ -38,7 +55,7 @@ setTheme('ocean') // runs BEFORE theme.js loads
 <h1>Unsatisfying Images</h1>
 <h4>Found from the Basement of the internet</h4>
 <br><br><br><br>
-<img src="https://cdn.jsdelivr.net/gh/gibberish2/fungiwebfiles/unsatisfying_images/linebowl.jpg" alt="Misaligned lines on a art piece of a bowl">
+<img src="https://cdn.jsdelivr.net/gh/gibberish2/fungiwebfiles/unsatisfying_images/linebowl.jpg" alt="Misaligned lines on a art piece of a bowl" class="pictures">
 <img src="https://cdn.jsdelivr.net/gh/gibberish2/fungiwebfiles/unsatisfying_images/misalignedmanhole.jpg" alt="Manhole stlightly in the wrong direction so that the road marker over it isn't straight">
 <img src="https://cdn.jsdelivr.net/gh/gibberish2/fungiwebfiles/unsatisfying_images/misalignedtrafficcone.jpg" alt="A traffic cone not perfectly in the center of the diagonals in the road">
 

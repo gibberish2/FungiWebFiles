@@ -27,35 +27,64 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.addEventListener('resize', resize);
     resize();
+class Spore {
+    constructor() {
+        this.init(true);
+    }
 
-    class Spore {
-        constructor() { this.init(true); }
+    init(randomY = false) {
+        this.x = Math.random() * canvas.width;
+        this.y = randomY ? Math.random() * canvas.height : -50;
 
-        init(randomY = false) {
-            this.x = Math.random() * canvas.width;
-            this.y = randomY ? Math.random() * canvas.height : canvas.height + 20;
-            this.size = Math.random() * 4; // Small circles
-            this.baseSpeedY = Math.random() * 0.8 + 0.3; 
-            this.speedX = (Math.random() - 0.5) * 0.5;   
-            this.opacity = randomY ? Math.random() : 1;
-            this.leafType = Math.floor(Math.random()*3+1);
-            /* THIS IS THE START OF SEASON SPORE BACKROUND IMAGES FROM FILES*/
-            this.leafimg = document.createElement('img')
-            this.leafimg.src = `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/fallLeaf${this.leafimg}.png`
-            /*END OF SEASONAL SPORE BACKROUND IMAGES*/
-            this.parallaxMult = this.size * 0.5; 
+        this.size = Math.random() * 4;
+        this.baseSpeedY = Math.random() * 0.8 + 0.3;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.opacity = randomY ? Math.random() : 1;
+        this.fadeSpeed = Math.random() * 0.003 + 0.001;
+        this.parallaxMult = this.size * 0.5;
+
+        this.leafType = Math.floor(Math.random() * 3) + 1;
+
+        this.leafimg = new Image();
+        this.leafimg.src =
+            `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/fallLeaf${this.leafType}.png`;
+    }
+
+    update() {
+        this.y += this.baseSpeedY;
+        this.x += this.speedX;
+        this.opacity -= this.fadeSpeed;
+
+        if (this.opacity <= 0 || this.y > canvas.height + 50) {
+            this.init(false);
+        }
+    }
+
+    draw(accent) {
+        if (!this.leafimg.complete || this.leafimg.naturalWidth === 0) {
+            return;
         }
 
-        update() {
-            this.y -= (this.baseSpeedY + (scrollDelta * 0.1 * this.parallaxMult));
-            this.x += this.speedX;
-            this.opacity -= this.fadeSpeed;
+        const width = 20 + this.size * 8;
+        const height = width * (this.leafimg.naturalHeight / this.leafimg.naturalWidth);
 
-            if (this.opacity <= 0 || this.y < -50 || this.y > canvas.height + 100) {
-                this.init(false);
-            }
-        }
+        ctx.globalAlpha = this.opacity;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = accent;
 
+        ctx.drawImage(
+            this.leafimg,
+            this.x - width / 2,
+            this.y - height / 2,
+            width,
+            height
+        );
+
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+    }
+}
+/*OG SPORE CIRCLES
         draw(accent) {
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -66,7 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fill();
         }
     }
-
+*/
+        
     function initParticles() {
         if (particles.length > particleCount) {
             particles.splice(particleCount);

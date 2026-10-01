@@ -68,7 +68,7 @@ class Spore {
 
         ctx.globalAlpha = this.opacity;
         ctx.shadowBlur = 2;
-        ctx.shadowColor = #D07A04;
+        ctx.shadowColor = '#D07A04';
 
         ctx.drawImage(
             this.leafimg,

@@ -1,9 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=New+Amsterdam&display=swap');
 :root {
-    --bg-color: #0f172a;
-    --nav-color: #1e293b;
-    --accent-color: #38bdf8;
-    --text-color: #B8B8B8;
+    --bg-color: #FFFBEB;      
+    --nav-color: #FDE68A;     
+    --accent-color: #9A3412;  
+    --text-color: #292524;    
       font-family: "New Amsterdam", sans-serif;
       font-weight: 400;
       font-style: normal;

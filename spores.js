@@ -40,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.opacity = randomY ? Math.random() : 1;
             this.leafType = Math.floor(Math.random()*3+1);
             /* THIS IS THE START OF SEASON SPORE BACKROUND IMAGES FROM FILES*/
-            this.leafimg = const img1 = document.createElement('img')
+            this.leafimg = document.createElement('img')
+            this.leafimg.src = `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/fallLeaf${this.leafimg}.png`
             /*END OF SEASONAL SPORE BACKROUND IMAGES*/
             this.parallaxMult = this.size * 0.5; 
         }

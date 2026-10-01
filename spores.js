@@ -40,15 +40,13 @@ class Spore {
         this.baseSpeedY = Math.random() * 0.8 + 0.3;
         this.speedX = (Math.random() - 0.5) * 0.5;
         this.opacity = randomY ? Math.random() : 1;
-        this.fadeSpeed = Math.random() * 0.003 + 0.001;
+        this.fadeSpeed = Math.random() * 0.00003 + 0.0001;
         this.parallaxMult = this.size * 0.5;
 
         this.leafType = Math.floor(Math.random() * 3) + 1;
 
         this.leafimg = new Image();
-        this.leafimg.src =
-            `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/fallLeaf${this.leafType}.png`;
-    }
+        this.leafimg.src = `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/fallLeaf${this.leafType}.png`; }
 
     update() {
         this.y += this.baseSpeedY;
@@ -69,8 +67,8 @@ class Spore {
         const height = width * (this.leafimg.naturalHeight / this.leafimg.naturalWidth);
 
         ctx.globalAlpha = this.opacity;
-        ctx.shadowBlur = 8;
-        ctx.shadowColor = accent;
+        ctx.shadowBlur = 2;
+        ctx.shadowColor = #D07A04;
 
         ctx.drawImage(
             this.leafimg,
@@ -109,7 +107,7 @@ class Spore {
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim() || '#38bdf8';
+        const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
         
         particles.forEach(p => {
             p.update();

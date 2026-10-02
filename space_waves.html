@@ -119,7 +119,6 @@ async function loadTemplate() {
             color: white;
             border: 2px solid white;
             border-radius: 50px;
-            font-family: 'Comic Sans MS', cursive;
             font-weight: bold;
             cursor: pointer;
             backdrop-filter: blur(4px);
@@ -135,15 +134,13 @@ async function loadTemplate() {
         backButton.onclick = () => { window.location.href = 'launcher.html'; };
         document.body.appendChild(backButton);
 
-        // CLEANUP: Game is ready
-        iframe.style.display = "block"; // Show the game ripoff
+        iframe.style.display = "block"; 
 
         const spores = document.getElementById("spores-canvas");
-        if (spores) spores.remove(); // Kill the particles
+        if (spores) spores.remove();
 
         const loader = document.getElementById("loader-container");
-        if (loader) loader.remove(); // Kill the loader
-
+        if (loader) loader.remove(); 
     } catch (e) {
         console.error(e);
     }

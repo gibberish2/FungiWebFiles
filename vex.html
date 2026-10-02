@@ -3,18 +3,18 @@
 <head>
     <title>Vex | Fungi</title>
     <link id="favicon" rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/assets/logo.svg">
-<script>
-    window.RufflePlayer = window.RufflePlayer || {};
-    window.RufflePlayer.config = {
-        wmode: "transparent",
-        backgroundColor: null
-    };
-</script>
-<script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
-<link rel="stylesheet" href="style.css">
+
+    <script>
+        window.RufflePlayer = window.RufflePlayer || {};
+        window.RufflePlayer.config = {
+            wmode: "transparent",
+            backgroundColor: null
+        };
+    </script>
+    <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+    <link rel="stylesheet" href="style.css">
+
     <style>
-
-
         body, html {
             margin: 0;
             padding: 0;
@@ -22,19 +22,20 @@
             height: 100%;
             overflow: hidden;
         }
+
         ruffle-player {
             background: transparent !important;
         }
+
         #ruffle-container {
             width: 100vw;
             height: 100vh;
             position: relative;
             z-index: 2;
             background: transparent !important;
-            display: none; /* Hidden until loaded */
+            display: none;
         }
 
-        /* Targets any canvas spores.js might create or use */
         canvas {
             position: fixed !important;
             top: 0 !important;
@@ -45,7 +46,6 @@
             background-color: var(--bg-color);
         }
 
-        /* --- YOUR ORIGINAL LOADER STYLES (UNTOUCHED) --- */
         .loading-text {
             color: var(--accent-color);
             font-weight: bold;
@@ -110,7 +110,7 @@
 <body>
     <canvas id="spores-canvas"></canvas>
 
-    <div id="loader-container" style="background-color: transparent; display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999; pointer-events: none;">
+    <div id="loader-container" style="background-color: transparent; display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999; pointer-events: none; transition: opacity 0.5s;">
         <div class="loader">
             <div class="text"><span>LOADING</span></div>
             <div class="text"><span>LOADING</span></div>
@@ -126,7 +126,7 @@
             Loading... <br>
             the og platformer
             <br>
-            Loading Animation from 
+            Loading Animation from
             <a href="https://uiverse.io/andrew-manzyk/unlucky-mouse-21" target="_blank" style="pointer-events: auto;">UIverse</a>
         </div>
     </div>
@@ -139,30 +139,22 @@
         const swfUrl = "https://raw.githubusercontent.com/Susorodni/swfgalaxy/a8aa0dc864c6e9b964ab966bc49f9b077401b8fb/games/vex.swf";
 
         async function initRuffle() {
-            window.RufflePlayer = window.RufflePlayer || {};
-            window.RufflePlayer.config = {
-                "wmode": "transparent",
-                "letterbox": "on"
-            };
-
             const ruffle = window.RufflePlayer.newest();
             const player = ruffle.createPlayer();
             const container = document.getElementById("ruffle-container");
-            
+
             container.appendChild(player);
             player.style.width = "100%";
             player.style.height = "100%";
 
             try {
-                // Load the game
                 await player.load({
                     url: swfUrl,
                     wmode: "transparent"
                 });
-                
-                // GAME LOADED: Show the container and hide the loader
+
                 container.style.display = "block";
-                
+
                 const loader = document.getElementById("loader-container");
                 loader.style.opacity = "0";
                 setTimeout(() => { loader.style.display = "none"; }, 500);

@@ -2,13 +2,21 @@
 <html>
 <head>
     <title>Space Waves | Fungi</title>
-    <link id="favicon" rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/assets/logo.svg">
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
 
-
+    <script> 
+        if (typeof setTheme !== 'function') {
+            window.setTheme = function(t) { console.log("Theme set to:", t); };
+        }
+        setTheme('ocean'); 
+    </script>
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="style.css">
 
     <style>
-
+        :root {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+        }
 
         body, html {
             margin: 0;
@@ -16,6 +24,7 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            background-color: #111;
         }
 
         /* The Spores Layer */
@@ -117,6 +126,7 @@ async function loadTemplate() {
             color: white;
             border: 2px solid white;
             border-radius: 50px;
+            font-family: 'Comic Sans MS', cursive;
             font-weight: bold;
             cursor: pointer;
             backdrop-filter: blur(4px);
@@ -132,13 +142,15 @@ async function loadTemplate() {
         backButton.onclick = () => { window.location.href = 'launcher.html'; };
         document.body.appendChild(backButton);
 
-        iframe.style.display = "block"; 
+        // CLEANUP: Game is ready
+        iframe.style.display = "block"; // Show the game ripoff
 
         const spores = document.getElementById("spores-canvas");
-        if (spores) spores.remove();
+        if (spores) spores.remove(); // Kill the particles
 
         const loader = document.getElementById("loader-container");
-        if (loader) loader.remove(); 
+        if (loader) loader.remove(); // Kill the loader
+
     } catch (e) {
         console.error(e);
     }

@@ -2,13 +2,21 @@
 <html>
 <head>
     <title>Subway Surfers London | Fungi</title>
-    <link id="favicon" rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/assets/logo.svg">
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
 
-
+    <script> 
+        if (typeof setTheme !== 'function') {
+            window.setTheme = function(t) { console.log("Theme set to:", t); };
+        }
+        setTheme('ocean'); 
+    </script>
+    <script src="theme.js"></script>
     <link rel="stylesheet" href="style.css">
 
     <style>
-
+        :root {
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+        }
 
         body, html {
             margin: 0;
@@ -19,6 +27,7 @@
             background-color: #111;
         }
 
+        /* The Spores Layer */
         canvas {
             position: fixed !important;
             top: 0 !important;
@@ -45,6 +54,7 @@
             pointer-events: none;
         }
 
+        /* Game Iframe - starts hidden */
         #game-iframe {
             position: fixed;
             top: 0;
@@ -116,6 +126,7 @@ async function loadTemplate() {
             color: white;
             border: 2px solid white;
             border-radius: 50px;
+            font-family: 'Comic Sans MS', cursive;
             font-weight: bold;
             cursor: pointer;
             backdrop-filter: blur(4px);

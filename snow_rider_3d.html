@@ -2,16 +2,23 @@
 <html>
 <head>
     <title>Snow Rider 3D | Fungi</title>
-    <link id="favicon" rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/assets/logo.svg">
-
+    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+<script>
+setTheme('ocean') // runs BEFORE theme.js loads 
+</script> 
+<script src="theme.js"></script>
 
 
     <link rel="stylesheet" href="style.css">
 
+    <style>
+        :root {
+            /* Standardized font declaration */
+            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+        }
 
 
-
-
+    </style>
 </head>
 <body>
     <div id="loader-container" style="background-color: var(--bg-color, #111); display: flex; flex-direction: column; justify-content: center; align-items: center; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999;">
@@ -64,6 +71,7 @@
                             color: white;
                             border: 2px solid white;
                             border-radius: 50px;
+                            font-family: 'Comic Sans MS', 'Comic Sans', cursive;
                             font-weight: bold;
                             cursor: pointer;
                             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);

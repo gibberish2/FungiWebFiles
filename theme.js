@@ -1,8 +1,8 @@
 const theme = {
-  '--bg-color':     '#FFFBEB',
-  '--nav-color':    '#FDE68A',
-  '--accent-color': '#9A3412',
-  '--text-color':   '#292524',
+  '--bg-color':     '#FAF3E8', 
+  '--nav-color':    '#E8B987', 
+  '--accent-color': '#B4471F',  
+  '--text-color':   '#3B2A20',  
 };
 
 for (const [prop, value] of Object.entries(theme)) {

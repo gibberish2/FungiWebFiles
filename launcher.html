@@ -72,18 +72,20 @@
             text-align: center;
             border-top: 1px solid rgba(255,255,255,0.1);
             border-radius: 5px;
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 0px solid var(--accent-color);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-width ease-in-out 0.3s;
             font-family: "New Amsterdam", sans-serif;
             font-weight: 400;
             font-style: normal;
+            
         }
         
         .game-banner:hover {
-            transform: translateY(-8px); /* Moves it up */
-            background-color: var(--nav-color); /* Changes color slightly */
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.3); /* Adds a shadow for depth */
+            transform: translateY(-8px);
+            background-color: var(--nav-color);
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.3); 
+            border-width: 3px;
         }
-        /* IMAGE URLS KEPT EXACTLY AS REQUESTED */
         .tiny-fishing { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfvyGOC8uwQX8xTL2cbsZabo_ehdkTYwA0kg&s'); }
         .volley-random { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://play-lh.googleusercontent.com/VeKAevaOjPlcyCtOpFY1h6SjwEjnu4ryG3xQ_qw1Muuhrg8pqwhl1aPjWovMkjc0Rc4'); }
         .drift-boss { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://img.poki-cdn.com/cdn-cgi/image/q=78,scq=50,width=314,height=314,fit=cover,f=auto/baf55f009fd63dd63c760a5dcfe79615/drift-boss.png'); }
@@ -137,7 +139,9 @@
         <a href="settings.html" class="nav-link" title = "Brings you to the settings page" alt = "settings page navigation button">Settings</a>
     </div>
 </nav>
-
+    //The game search for people who don't have enough time on their hands to scroll
+<input type="text" id="gameSearch" placeholder="Can't find a game?">
+<p id="noResults" style="display:none;">No Games Found, sorry!😓</p>
 
 <div class="button-grid" id="grid">
             <button class="game-btn" onclick="location.href='tiny_fishing.html'">
@@ -317,7 +321,29 @@
             </button>
         </div>
     </div>
+<script>
+    const search=document.getElementById('gameSearch');
+    const games=document.querySelectorAll(#grid .game-btn');
+    const noResults=document.getElementById('noResults');
 
+    search.addEventListener('input', ()=>{
+        const query=search.value.trim().toLowerCase();
+        let count=0;
+
+        games.forEach(game=> {
+            const name=game.querySelector('.game-banner').textContent.toLowerCase();
+            const matches=name.includes(query);
+
+            game.style.display=matches ? '' : 'none';
+
+            if (matches) {
+                count+=1;
+            }
+        });
+
+        noResults.style.display = count === 0 ? 'block' : 'none';
+    });
+</script>
 
 
 

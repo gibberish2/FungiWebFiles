@@ -1,9 +1,15 @@
-
-
 let player;
 let queue = [];
 let currentIndex = 0;
 let playerReady = false;
+
+/* -----------------------------
+   LOADER (shows/hides the animation)
+----------------------------- */
+function setLoading(isLoading) {
+    const loader = document.getElementById('loader');
+    if (loader) loader.classList.toggle('active', isLoading);
+}
 
 /* -----------------------------
    INIT YOUTUBE PLAYER
@@ -24,16 +30,25 @@ function onYouTubeIframeAPIReady() {
                 playerReady = true;
                 console.log("YouTube Player Ready");
             },
-            onStateChange: onStateChange
+            onStateChange: onStateChange,
+            onError: () => setLoading(false) // don't leave the loader stuck if a video fails
         }
     });
 }
 
 function onStateChange(e) {
+    if (e.data === YT.PlayerState.BUFFERING) {
+        setLoading(true);
+    } else if (e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.PAUSED) {
+        setLoading(false);
+    }
+
     if (e.data === YT.PlayerState.ENDED) {
         currentIndex++;
         if (currentIndex < queue.length) {
             playFromQueue();
+        } else {
+            setLoading(false);
         }
     }
 }
@@ -44,6 +59,8 @@ function onStateChange(e) {
 window.searchYouTube = async function () {
     const query = document.getElementById("search-input").value;
     if (!query) return;
+
+    setLoading(true);
 
     const blopyblim = "AIzaSyDB3ijq7TdKKElkH16woL4htaUCCHVVCB4";
 
@@ -57,6 +74,7 @@ window.searchYouTube = async function () {
         if (!data.items) {
             console.error("API Error:", data);
             alert("Search failed (check API key or quota)");
+            setLoading(false);
             return;
         }
 
@@ -71,12 +89,12 @@ window.searchYouTube = async function () {
         currentIndex = 0;
         renderQueue();
 
-        if (playerReady && queue.length > 0) {
-            playFromQueue();
-        }
+        // Don't auto-play: just show the results and wait for a click
+        setLoading(false);
 
     } catch (err) {
         console.error("Fetch error:", err);
+        setLoading(false);
     }
 }
 /* -----------------------------
@@ -86,11 +104,9 @@ function playFromQueue() {
     const item = queue[currentIndex];
     if (!item) return;
 
-    // Select the container where "Select a song" used to be
     const nowPlayingContainer = document.getElementById("now-playing");
     
     if (nowPlayingContainer) {
-        // Update the container with the thumbnail and text info
         nowPlayingContainer.innerHTML = `
             <div style="display: flex; align-items: center; gap: 15px; text-align: left;">
                 <img src="${item.image}" style="width: 80px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--accent-color);">
@@ -102,12 +118,15 @@ function playFromQueue() {
         `;
     }
 
+    setLoading(true);
+
     if (player && player.loadVideoById) {
         try {
             player.loadVideoById(item.id);
             player.playVideo();
         } catch (err) {
             console.error("Playback error:", err);
+            setLoading(false);
         }
     }
 }
@@ -145,7 +164,6 @@ function renderQueue() {
         const div = document.createElement("div");
         div.className = "track";
 
-        // We display the channel name right under the title
         div.innerHTML = `
             <img src="${song.image}" class="track-thumb" style="pointer-events: none;" />
             <div class="track-info" style="pointer-events: none;">

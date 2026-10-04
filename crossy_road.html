@@ -2,7 +2,7 @@
 <html>
 <head>
 <title>Crossy Road | Fungi</title>
-    <link rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
+    <link id="favicon" rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/assets/logo.svg">
 
 <body>
     <script>
@@ -18,7 +18,6 @@
                     document.write(html);
                     document.close();
 
-                    // 1. Inject the CSS into the NEW document
                     const style = document.createElement('style');
                     style.textContent = `
                         .back-launcher-btn {
@@ -45,9 +44,8 @@
                     `;
                     document.head.appendChild(style);
 
-                    // 2. Create the button and apply the class
                     const backButton = document.createElement('button');
-                    backButton.className = 'back-launcher-btn'; // Matches the CSS above
+                    backButton.className = 'back-launcher-btn'; 
                     backButton.innerHTML = '← Return to Launcher';
                     
                     backButton.onclick = function() {

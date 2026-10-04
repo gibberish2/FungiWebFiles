@@ -170,6 +170,52 @@
             height: 1px;
             opacity: 0;
         }
+    /* From Uiverse.io by adamgiebl (adjusted to fit the loader slot) */
+.dots-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+}
+
+.dot {
+  height: 20px;
+  width: 20px;
+  margin-right: 10px;
+  border-radius: 10px;
+  background-color: #b3d4fc;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.dot:last-child {
+  margin-right: 0;
+}
+
+.dot:nth-child(1) { animation-delay: -0.3s; }
+.dot:nth-child(2) { animation-delay: -0.1s; }
+.dot:nth-child(3) { animation-delay: 0.1s; }
+.dot:nth-child(4) { animation-delay: 0.3s; }
+.dot:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    background-color: #b3d4fc;
+    box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+  }
+
+  50% {
+    transform: scale(1.2);
+    background-color: #6793fb;
+    box-shadow: 0 0 0 10px rgba(178, 212, 252, 0);
+  }
+
+  100% {
+    transform: scale(0.8);
+    background-color: #b3d4fc;
+    box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7);
+  }
+}
     </style>
 </head>
 
@@ -189,11 +235,24 @@
 <div class="content">
     <h1 class="glow-text">Music</h1>
 
-    <div class="image-container">
-        <div id="now-playing">Select a song</div>
-    </div>
+<div class="image-container">
+    <div id="now-playing">Select a song</div>
+</div>
 
-    <!-- SEARCH UI -->
+<div id="loader-space">
+    <div id="loader">
+        <section class="dots-container">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </section>
+        <p>Loading...</p>
+    </div>
+</div>
+
+
     <div style="margin-bottom:20px; width:300px;">
         <input id="search-input" class="search-box" placeholder="Search YouTube songs..." />
         <button onclick="searchYouTube()" style="width:100%; margin-top:5px;">
@@ -213,8 +272,8 @@
 
 <div id="ytplayer"></div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
 <script src="music.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
 <script src="spores.js"></script>
 
 <!-- Cloudflare -->

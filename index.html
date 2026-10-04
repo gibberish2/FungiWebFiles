@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home | Fungi</title>
-    <link id="favicon" rel="icon" type="image/png" href="https://codehs.com/uploads/dbf77e4f4711feb9506d37e52b30a2dd">
-<script> 
-    setTheme('ocean') // runs BEFORE theme.js loads
-</script> 
+    <link id="favicon" rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/assets/logo.svg">
+
 <script src="theme.js"></script>
 
     <link rel="stylesheet" href="style.css">
-
-    <style>
-        /* GLOBAL THEME SYNC */
+<style>
         body {
             background-color: var(--bg-color);
-            color: white;
+            color: var(--text-color);
             margin: 0;
             transition: background-color 0.3s ease;
         }
-
+        
+        :root {
+            interpolate-size: allow-keywords;
+        }
+        
         .content {
             text-align: center;
             padding: 40px 20px;
@@ -28,178 +28,117 @@
             flex-direction: column;
             align-items: center;
         }
-
-        .glow-text {
-            color: #fff;
-            text-shadow: 0 0 7px var(--accent-color), 0 0 10px var(--accent-color), 0 0 21px var(--accent-color);
-            animation: pulse-glow 2s infinite alternate;
-        }
+        
         .oi-title {
             font-family: 'Oi', serif;
             font-weight: 1;
             font-style: normal;
         }
-        @keyframes pulse-glow {
-            from { text-shadow: 0 0 5px var(--accent-color), 0 0 10px var(--accent-color); }
-            to { text-shadow: 0 0 10px var(--accent-color), 0 0 20px var(--accent-color), 0 0 30px var(--accent-color); }
-        }
-
-        .image-container {
-            background-color: rgba(128, 128, 128, 0.4);
-            border-radius: 15px;
-            padding: 15px;
-            display: inline-block;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-            animation: float 4s ease-in-out infinite;
-        }
-    
-        .image-container:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px var(--accent-color);
-            animation-play-state: paused;
-        }
-    
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-
+        
         .theme-btn {
-            padding: 12px 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: fit-content;
+            min-width: 150px;
+            max-width: 90vw;
             margin: 10px;
+            padding: 12px 24px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
             font-family: inherit;
-            color: white;
+            color: var(--on-accent, #1F140D);
             background-color: var(--accent-color);
-            position: relative;
-            transition: transform 0.2s, filter 0.2s, width 0.4s ease, height 0.4s ease;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            max-width: 90vw;
             white-space: nowrap;
             overflow: hidden;
-            padding: 12px 24px;
-            width: fit-content;
-            min-width: 150px; /* Optional: keeps it from getting too tiny */
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            white-space: nowrap; /* Keeps text on one line during the slide */
-            overflow: hidden;
-}
-            
         }
-
+        
         .theme-btn:hover {
             transform: scale(1.05);
             filter: brightness(1.2);
             box-shadow: 0 0 15px var(--accent-color);
         }
-
-
-        #btnText { 
-            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; 
+        
+        #btnText {
             display: inline-block;
             pointer-events: none;
+            transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
         }
         
-        .text-hidden { 
-            opacity: 0; 
-            transform: translateY(5px); 
+        .text-hidden {
+            opacity: 0;
+            transform: translateY(5px);
         }
-        :root {
-            interpolate-size: allow-keywords; /* Enables smooth 'auto' transitions */
-            --accent-color: #38bdf8;
-
+        
+        /* blur background when popup is open */
+        body.popup-open > .content,
+        body.popup-open > nav {
+            filter: blur(6px);
         }
-
-
-
-
-/* random content */
-.content {
-    padding: 40px;
-}
-
-/* blur background */
-body.popup-open > .content,
-body.popup-open > nav {
-    filter: blur(6px);
-}
-.updateDiv {
-    filter: none !important;
-}
-/* overlay */
-.overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    backdrop-filter: blur(4px);
-
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.25s ease;
-
-    z-index: 50;
-}
-
-/* popup */
-.updateDiv {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-
-    background: var(--bg-color);
-    color: white;
-
-    padding: 20px;
-    border-radius: 12px;
-    border: 2px solid var(--accent-color);
-
-    width: fit-content;
-    max-width: 90vw;
-
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.25s ease;
-
-    z-index: 1000;
-}
-
-/* active state */
-.overlay.active {
-    opacity: 1;
-    visibility: visible;
-}
-
-.updateDiv.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-/* button */
-button {
-    margin-top: 15px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 6px;
-    background: var(--accent-color);
-    color: black;
-    cursor: pointer;
-}
-
-#rndmText {
-    color: white;
-    display: block;
-    margin-top: 10px;
-}
+        
+        /* overlay */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease;
+            z-index: 50;
+        }
+        
+        /* popup */
+        .updateDiv {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--accent-color);
+            width: fit-content;
+            max-width: 90vw;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+            z-index: 1000;
+            filter: none !important;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .updateDiv.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        /* generic button */
+        button {
+            margin-top: 15px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            background: var(--accent-color);
+            color: var(--on-accent, #1F140D);
+            cursor: pointer;
+        }
+        
+        #rndmText {
+            color: var(--text-color);
+            display: block;
+            margin-top: 10px;
+        }
 
     </style>
     <!--The Oi font import from google fonts (w service btw 5 out of 5 stars)-->

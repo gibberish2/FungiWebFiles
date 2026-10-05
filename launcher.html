@@ -51,7 +51,11 @@
             background: none;
         }
 
-        .game-btn:hover { transform: scale(1.05); }
+        .game-btn:hover {
+            transform: scale(1.05); 
+            border-width: 3px;
+
+        }
 
         /* The Logo Area */
         .game-img {
@@ -83,7 +87,6 @@
         .game-banner:hover {
             transform: translateY(-8px);
             background-color: var(--nav-color);
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.3); 
             border-width: 3px;
         }
         .tiny-fishing { background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfvyGOC8uwQX8xTL2cbsZabo_ehdkTYwA0kg&s'); }
@@ -323,7 +326,7 @@
     </div>
 <script>
     const search=document.getElementById('gameSearch');
-    const games=document.querySelectorAll(#grid .game-btn');
+    const games=document.querySelectorAll('#grid .game-btn');
     const noResults=document.getElementById('noResults');
 
     search.addEventListener('input', ()=>{

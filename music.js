@@ -3,20 +3,14 @@ let queue = [];
 let currentIndex = 0;
 let playerReady = false;
 
-/* -----------------------------
-   LOADER (shows/hides the animation)
------------------------------ */
 function setLoading(isLoading) {
     const loader = document.getElementById('loader');
-    if (loader) loader.classList.toggle('active', isLoading);
+    if (loader) {
+        loader.style.display = isLoading ? 'block' : 'none';
+    }
 }
 
-/* -----------------------------
-   INIT YOUTUBE PLAYER
------------------------------ */
-function onYouTubeIframeAPIReady() {
-    console.log("YT API Loaded");
-
+window.onYouTubeIframeAPIReady = function() {
     player = new YT.Player('ytplayer', {
         height: '1',
         width: '1',
@@ -28,18 +22,15 @@ function onYouTubeIframeAPIReady() {
         events: {
             onReady: () => {
                 playerReady = true;
-                console.log("YouTube Player Ready");
             },
-            onStateChange: onStateChange,
-            onError: () => setLoading(false) // don't leave the loader stuck if a video fails
+            onStateChange: handleStateChange,
+            onError: () => setLoading(false)
         }
     });
-}
+};
 
-function onStateChange(e) {
-    if (e.data === YT.PlayerState.BUFFERING) {
-        setLoading(true);
-    } else if (e.data === YT.PlayerState.PLAYING || e.data === YT.PlayerState.PAUSED) {
+function handleStateChange(e) {
+    if (e.data === YT.PlayerState.PLAYING) {
         setLoading(false);
     }
 
@@ -53,11 +44,9 @@ function onStateChange(e) {
     }
 }
 
-/* -----------------------------
-    SEARCH YOUTUBE (Updated)
------------------------------ */
-window.searchYouTube = async function () {
-    const query = document.getElementById("search-input").value;
+window.searchYouTube = async function() {
+    const searchInput = document.getElementById("search-input");
+    const query = searchInput ? searchInput.value.trim() : "";
     if (!query) return;
 
     setLoading(true);
@@ -72,65 +61,75 @@ window.searchYouTube = async function () {
         const data = await res.json();
 
         if (!data.items) {
-            console.error("API Error:", data);
-            alert("Search failed (check API key or quota)");
+            alert("Search failed");
             setLoading(false);
             return;
         }
 
-        // ADDED: item.snippet.channelTitle
         queue = data.items.map(item => ({
             id: item.id.videoId,
             title: item.snippet.title,
-            channel: item.snippet.channelTitle, 
-            image: item.snippet.thumbnails.medium.url
+            channel: item.snippet.channelTitle,
+            image: item.snippet.thumbnails.medium ? item.snippet.thumbnails.medium.url : item.snippet.thumbnails.default.url
         }));
 
         currentIndex = 0;
         renderQueue();
-
-        // Don't auto-play: just show the results and wait for a click
         setLoading(false);
 
     } catch (err) {
-        console.error("Fetch error:", err);
         setLoading(false);
     }
-}
-/* -----------------------------
-   PLAYBACK
------------------------------ */
+};
+
 function playFromQueue() {
     const item = queue[currentIndex];
     if (!item) return;
 
-    const nowPlayingContainer = document.getElementById("now-playing");
-    
-    if (nowPlayingContainer) {
-        nowPlayingContainer.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 15px; text-align: left;">
-                <img src="${item.image}" style="width: 80px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--accent-color);">
-                <div>
-                    <div style="font-weight: bold; font-size: 16px;">${item.title}</div>
-                    <div style="font-size: 13px; color: var(--accent-color); opacity: 0.8;">${item.channel}</div>
-                </div>
-            </div>
-        `;
-    }
-
     setLoading(true);
+
+    const nowPlayingContainer = document.getElementById("now-playing");
+
+    if (nowPlayingContainer) {
+        nowPlayingContainer.innerHTML = '';
+
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = "display: flex; align-items: center; gap: 15px; text-align: left;";
+
+        const img = document.createElement('img');
+        img.src = item.image;
+        img.style.cssText = "width: 80px; height: 60px; border-radius: 8px; object-fit: cover; border: 1px solid var(--accent-color);";
+
+        const textDiv = document.createElement('div');
+        
+        const titleDiv = document.createElement('div');
+        titleDiv.style.cssText = "font-weight: bold; font-size: 16px;";
+        titleDiv.textContent = item.title;
+
+        const channelDiv = document.createElement('div');
+        channelDiv.style.cssText = "font-size: 13px; color: var(--accent-color); opacity: 0.8;";
+        channelDiv.textContent = item.channel;
+
+        textDiv.appendChild(titleDiv);
+        textDiv.appendChild(channelDiv);
+        wrapper.appendChild(img);
+        wrapper.appendChild(textDiv);
+        nowPlayingContainer.appendChild(wrapper);
+    }
 
     if (player && player.loadVideoById) {
         try {
             player.loadVideoById(item.id);
             player.playVideo();
         } catch (err) {
-            console.error("Playback error:", err);
             setLoading(false);
         }
     }
+    
+    renderQueue();
 }
-function togglePlay() {
+
+window.togglePlay = function() {
     if (!player || !playerReady) return;
 
     const state = player.getPlayerState();
@@ -140,21 +139,19 @@ function togglePlay() {
     } else {
         player.playVideo();
     }
-}
-function skip(seconds) {
-    if (!player) return;
+};
+
+window.skip = function(seconds) {
+    if (!player || typeof player.getCurrentTime !== 'function') return;
     let t = player.getCurrentTime();
     player.seekTo(t + seconds, true);
-}
+};
 
-function adjustVolume(v) {
-    if (!player) return;
+window.adjustVolume = function(v) {
+    if (!player || typeof player.setVolume !== 'function') return;
     player.setVolume(v * 100);
-}
+};
 
-/* -----------------------------
-   QUEUE RENDER
------------------------------ */
 function renderQueue() {
     const el = document.getElementById("playlist");
     if (!el) return;
@@ -163,18 +160,35 @@ function renderQueue() {
     queue.forEach((song, i) => {
         const div = document.createElement("div");
         div.className = "track";
+        
+        if (i === currentIndex && playerReady) {
+            div.style.borderColor = "var(--accent-color)";
+        }
 
-        div.innerHTML = `
-            <img src="${song.image}" class="track-thumb" style="pointer-events: none;" />
-            <div class="track-info" style="pointer-events: none;">
-                <div class="track-title" style="font-weight: bold;">${song.title}</div>
-                <div class="track-channel" style="font-size: 12px; color: #aaa; margin-top: 4px;">
-                    ${song.channel}
-                </div>
-            </div>
-        `;
+        const img = document.createElement("img");
+        img.src = song.image;
+        img.className = "track-thumb";
+        img.style.pointerEvents = "none";
 
-        // Using arrow function to ensure 'i' stays correct for the click
+        const infoDiv = document.createElement("div");
+        infoDiv.className = "track-info";
+        infoDiv.style.pointerEvents = "none";
+
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "track-title";
+        titleDiv.style.fontWeight = "bold";
+        titleDiv.textContent = song.title;
+
+        const channelDiv = document.createElement("div");
+        channelDiv.className = "track-channel";
+        channelDiv.style.cssText = "font-size: 12px; color: #aaa; margin-top: 4px;";
+        channelDiv.textContent = song.channel;
+
+        infoDiv.appendChild(titleDiv);
+        infoDiv.appendChild(channelDiv);
+        div.appendChild(img);
+        div.appendChild(infoDiv);
+
         div.addEventListener("click", () => {
             currentIndex = i;
             playFromQueue();
@@ -183,4 +197,3 @@ function renderQueue() {
         el.appendChild(div);
     });
 }
-window.togglePlay = togglePlay;

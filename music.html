@@ -250,21 +250,21 @@
 </div>
 
 
-    <div style="margin-bottom:20px; width:300px;">
-        <input id="search-input" class="search-box" placeholder="search away.." />
-        <script>
-            const searchBox = document.getElementById(".search-input");
-            searchBox.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    event.preventDefault();
+<div style="margin-bottom:20px; width:300px;">
+    <input id="search-input" class="search-box" placeholder="search away.." />
+    <script>
+        const searchBox = document.getElementById("search-input");
+        searchBox.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                searchYouTube();
             }
-)};
-        
-        </script>
-        <button onclick="searchYouTube()" style="width:100%; margin-top:5px;">
-            Search
-        </button>
-    </div>
+        });
+    </script>
+    <button onclick="searchYouTube()" style="width:100%; margin-top:5px;">
+        Search
+    </button>
+</div>
 
     <!-- CONTROLS -->
     <div class="popup-controls" style="margin-bottom:20px;">

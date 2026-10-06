@@ -12,7 +12,6 @@
         :root {
             --glass-bg: rgba(255, 255, 255, 0.05);
             --glass-border: rgba(255, 255, 255, 0.1);
-            --blur: 12px;
         }
 
         body {
@@ -38,19 +37,17 @@
             box-sizing: border-box;
         }
 
-        .glow-text {
+        .text {
             font-size: 3rem;
-            background: linear-gradient(to bottom, #fff, var(--accent-color));
+            background: var(--accent-color);
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px var(--accent-color));
             margin-bottom: 30px;
         }
 
         .image-container {
             background: var(--glass-bg);
-            backdrop-filter: blur(var(--blur));
-            -webkit-backdrop-filter: blur(var(--blur));
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             border-radius: 24px;
             padding: 25px;
             border: 1px solid var(--glass-border);
@@ -67,8 +64,8 @@
         }
         .image-container:hover{
             border: solid var(--accent-color);
-            width: 91%;
-            height: 6vh;
+            width: 75%;
+            height: 2vh;
             
         }
 
@@ -233,14 +230,14 @@
 </nav>
 
 <div class="content">
-    <h1 class="glow-text">Music</h1>
+    <h1 class="text">Music</h1>
 
 <div class="image-container">
-    <div id="now-playing">Select a song</div>
+    <div id="now-playing"></div>
 </div>
 
 <div id="loader-space">
-    <div id="loader">
+    <div id="loader" style="display: none;">
         <section class="dots-container">
             <div class="dot"></div>
             <div class="dot"></div>
@@ -254,7 +251,7 @@
 
 
     <div style="margin-bottom:20px; width:300px;">
-        <input id="search-input" class="search-box" placeholder="Search YouTube songs..." />
+        <input id="search-input" class="search-box" placeholder="search away.." />
         <button onclick="searchYouTube()" style="width:100%; margin-top:5px;">
             Search
         </button>

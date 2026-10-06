@@ -49,8 +49,6 @@ window.searchYouTube = async function() {
     const query = searchInput ? searchInput.value.trim() : "";
     if (!query) return;
 
-    setLoading(true);
-
     const blopyblim = "AIzaSyDB3ijq7TdKKElkH16woL4htaUCCHVVCB4";
 
     try {
@@ -62,7 +60,6 @@ window.searchYouTube = async function() {
 
         if (!data.items) {
             alert("Search failed");
-            setLoading(false);
             return;
         }
 
@@ -75,10 +72,8 @@ window.searchYouTube = async function() {
 
         currentIndex = 0;
         renderQueue();
-        setLoading(false);
 
     } catch (err) {
-        setLoading(false);
     }
 };
 

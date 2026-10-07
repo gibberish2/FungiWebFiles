@@ -288,7 +288,7 @@ function renderCustomPlaylistView() {
     playAllBtn.style.cssText = "padding: 6px 12px; font-size: 12px;";
     playAllBtn.onclick = () => {
         if (songs.length === 0) {
-            alert("*you can resist tapping your foot to the sweet beat of silence*");
+            alert("*you can't resist tapping your foot to the sweet beat of silence*");
             return;
         }
         queue = [...songs];

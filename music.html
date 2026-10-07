@@ -249,7 +249,19 @@
     </div>
 </div>
 
+<div class="playlist-manager" style="margin: 20px 0; width: 100%; max-width: 500px; text-align: left;">
+    <h3>playlists</h3>
+    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+        <input id="playlist-name-input" placeholder="what shall you call the playlist..." style="flex: 1; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; border-radius: 8px; outline: none;" />
+        <button onclick="createCustomPlaylist()">+</button>
+    </div>
+    
+    <select id="playlist-select" onchange="switchCustomPlaylist()" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--glass-border); border-radius: 8px; margin-bottom: 15px;">
+        <option value="">select a playlist twin✌</option>
+    </select>
 
+    <div id="custom-playlist-container" class="button-grid" style="margin-top: 10px;"></div>
+</div>
 <div style="margin-bottom:20px; width:300px;">
     <input id="search-input" class="search-box" placeholder="search away.." />
     <script>
@@ -262,7 +274,7 @@
         });
     </script>
     <button onclick="searchYouTube()" style="width:100%; margin-top:5px;">
-        Search
+        search
     </button>
 </div>
 
@@ -275,26 +287,13 @@
 
     <div id="playlist" class="button-grid"></div>
 </div>
-<div class="playlist-manager" style="margin: 20px 0; width: 100%; max-width: 500px; text-align: left;">
-    <h3>Custom Playlists</h3>
-    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-        <input id="playlist-name-input" placeholder="New Playlist Name..." style="flex: 1; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; border-radius: 8px; outline: none;" />
-        <button onclick="createCustomPlaylist()">Create</button>
-    </div>
-    
-    <select id="playlist-select" onchange="switchCustomPlaylist()" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--glass-border); border-radius: 8px; margin-bottom: 15px;">
-        <option value="">-- Select a Playlist --</option>
-    </select>
 
-    <div id="custom-playlist-container" class="button-grid" style="margin-top: 10px;"></div>
-</div>
 <div id="ytplayer"></div>
 
 <script src="music.js"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="spores.js"></script>
 
-<!-- Cloudflare -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script>
 
 </body>

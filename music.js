@@ -62,7 +62,7 @@ window.searchYouTube = async function() {
         const data = await res.json();
 
         if (!data.items) {
-            alert("Search failed");
+            alert("You might wanna check your end because I know my end is a-okay");
             return;
         }
 
@@ -204,11 +204,11 @@ window.createCustomPlaylist = function() {
     const input = document.getElementById("playlist-name-input");
     const name = input ? input.value.trim() : "";
     if (!name) {
-        alert("Please enter a playlist name.");
+        alert("Ohh, I love that name!");
         return;
     }
     if (customPlaylists[name]) {
-        alert("A playlist with this name already exists.");
+        alert("Do you potentionally have dimentia? That already exists gramps");
         return;
     }
 
@@ -227,7 +227,7 @@ function savePlaylists() {
 function initPlaylistDropdown() {
     const select = document.getElementById("playlist-select");
     if (!select) return;
-    select.innerHTML = '<option value="">-- Select a Playlist --</option>';
+    select.innerHTML = '<option value="">choose a playlist twin✌</option>';
 
     Object.keys(customPlaylists).forEach(name => {
         const opt = document.createElement("option");
@@ -245,12 +245,12 @@ window.switchCustomPlaylist = function() {
 
 function addSongToCustomPlaylist(song) {
     if (!currentCustomPlaylistName) {
-        alert("Please select or create a custom playlist first using the dropdown above!");
+        alert("May I ask you, what are you adding that song to? Ohh, no playlist, okay.");
         return;
     }
     const list = customPlaylists[currentCustomPlaylistName];
     if (list.some(s => s.id === song.id)) {
-        alert("Song is already in this playlist!");
+        alert("You must really like this song, noice");
         return;
     }
 
@@ -266,7 +266,7 @@ function renderCustomPlaylistView() {
     container.innerHTML = "";
 
     if (!currentCustomPlaylistName || !customPlaylists[currentCustomPlaylistName]) {
-        container.innerHTML = "<p style='color: #aaa; font-size: 14px;'>No custom playlist selected.</p>";
+        container.innerHTML = "<p style='color: #aaa; font-size: 14px;'>Ah yes, I love the sound of a placeholder</p>";
         return;
     }
 
@@ -284,11 +284,11 @@ function renderCustomPlaylistView() {
     actionsDiv.style.gap = "10px";
 
     const playAllBtn = document.createElement("button");
-    playAllBtn.textContent = "Play Playlist";
+    playAllBtn.textContent = "play";
     playAllBtn.style.cssText = "padding: 6px 12px; font-size: 12px;";
     playAllBtn.onclick = () => {
         if (songs.length === 0) {
-            alert("Playlist is empty!");
+            alert("*you can resist tapping your foot to the sweet beat of silence*");
             return;
         }
         queue = [...songs];
@@ -318,7 +318,7 @@ function renderCustomPlaylistView() {
     if (songs.length === 0) {
         const emptyMsg = document.createElement("p");
         emptyMsg.style.cssText = "grid-column: 1 / -1; color: #888; font-size: 13px;";
-        emptyMsg.textContent = "This playlist is empty. Search for songs and click the '+' button to add them here!";
+        emptyMsg.textContent = "*you can resist tapping your foot to the sweet beat of silence*";
         container.appendChild(emptyMsg);
         return;
     }

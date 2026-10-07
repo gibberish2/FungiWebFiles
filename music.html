@@ -229,63 +229,329 @@
     </div>
 </nav>
 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music | Fungi</title>
+    <link id="favicon" rel="icon" type="image/svg+xml" href="https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/assets/logo.svg">
+
+    <script src="theme.js"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 128, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 200, 255, 0.05) 0%, transparent 20%);
+            color: white;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .text {
+            font-size: 3rem;
+            background: var(--accent-color);
+            -webkit-background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .image-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 24px;
+            padding: 25px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            margin-bottom: 20px;
+            width: 90%;
+            max-width: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* SIDE-BY-SIDE MUSIC DASHBOARD LAYOUT */
+        .music-dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+            align-items: start;
+            text-align: left;
+            margin-top: 20px;
+            box-sizing: border-box;
+            padding: 0 10px;
+        }
+
+        .dashboard-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .playlist-manager {
+            background: var(--glass-bg);
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            width: 100% !important;
+            max-width: none !important;
+            box-sizing: border-box;
+        }
+
+        .search-container-box {
+            width: 100%;
+            max-width: none !important;
+        }
+
+        #search-input, #playlist-name-input {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            color: white;
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        #search-input:focus, #playlist-name-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(0, 255, 128, 0.2);
+        }
+
+        #playlist-select {
+            width: 100%;
+            padding: 12px 20px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .button-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .track {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .track:hover {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .track-thumb {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        .track-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .track-title {
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        button {
+            background: var(--accent-color);
+            color: black;
+            border: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        .popup-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        #ytplayer {
+            position: fixed;
+            bottom: -100px;
+            left: -100px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+
+        /* Dots Loader */
+        .dots-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+        }
+
+        .dot {
+            height: 20px;
+            width: 20px;
+            margin-right: 10px;
+            border-radius: 10px;
+            background-color: #b3d4fc;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        .dot:last-child { margin-right: 0; }
+        .dot:nth-child(1) { animation-delay: -0.3s; }
+        .dot:nth-child(2) { animation-delay: -0.1s; }
+        .dot:nth-child(3) { animation-delay: 0.1s; }
+        .dot:nth-child(4) { animation-delay: 0.3s; }
+        .dot:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); background-color: #b3d4fc; box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7); }
+            50% { transform: scale(1.2); background-color: #6793fb; box-shadow: 0 0 0 10px rgba(178, 212, 252, 0); }
+            100% { transform: scale(0.8); background-color: #b3d4fc; box-shadow: 0 0 0 0 rgba(178, 212, 252, 0.7); }
+        }
+
+        /* Responsive Breakpoint for Mobile */
+        @media(max-width: 850px) {
+            .music-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="index.html" class="nav-link" title="Brings you to the home page">Home</a>
+        <a href="launcher.html" class="nav-link" title="Brings you to the games page">Games</a>
+        <a href="tools.html" class="nav-link" title="Brings you to the tools page">Tools</a>
+        <a href="music.html" class="nav-link active" title="Brings you to the music page">Music</a>
+        <a href="about.html" class="nav-link" title="Brings you to the about page">About</a>
+        <a href="settings.html" class="nav-link" title="Brings you to the settings page">Settings</a>
+    </div>
+</nav>
+
 <div class="content">
     <h1 class="text">Music</h1>
 
-<div class="image-container">
-    <div id="now-playing"></div>
-</div>
-
-<div id="loader-space">
-    <div id="loader" style="display: none;">
-        <section class="dots-container">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-        </section>
-        <p>Loading...</p>
+    <div class="image-container">
+        <div id="now-playing"></div>
     </div>
-</div>
 
-<div class="playlist-manager" style="margin: 20px 0; width: 100%; max-width: 500px; text-align: left;">
-    <h3>playlists</h3>
-    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-        <input id="playlist-name-input" placeholder="what shall you call the playlist..." style="flex: 1; padding: 10px; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; border-radius: 8px; outline: none;" />
-        <button onclick="createCustomPlaylist()">+</button>
+    <div id="loader-space">
+        <div id="loader" style="display: none;">
+            <section class="dots-container">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </section>
+            <p>Loading...</p>
+        </div>
     </div>
-    
-    <select id="playlist-select" onchange="switchCustomPlaylist()" style="width: 100%; padding: 10px; background: rgba(0,0,0,0.5); color: white; border: 1px solid var(--glass-border); border-radius: 8px; margin-bottom: 15px;">
-        <option value="">select a playlist twin✌</option>
-    </select>
 
-    <div id="custom-playlist-container" class="button-grid" style="margin-top: 10px;"></div>
-</div>
-<div style="margin-bottom:20px; width:300px;">
-    <input id="search-input" class="search-box" placeholder="search away.." />
-    <script>
-        const searchBox = document.getElementById("search-input");
-        searchBox.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault();
-                searchYouTube();
-            }
-        });
-    </script>
-    <button onclick="searchYouTube()" style="width:100%; margin-top:5px;">
-        search
-    </button>
-</div>
-
-    <!-- CONTROLS -->
-    <div class="popup-controls" style="margin-bottom:20px;">
+    <div class="popup-controls">
         <button onclick="skip(-10)">«</button>
         <button onclick="togglePlay()">⏯</button>
         <button onclick="skip(10)">»</button>
     </div>
 
-    <div id="playlist" class="button-grid"></div>
+    <div class="music-dashboard">
+        
+        <div class="dashboard-column">
+            <div class="search-container-box">
+                <input id="search-input" class="search-box" placeholder="search away.." />
+                <script>
+                    const searchBox = document.getElementById("search-input");
+                    searchBox.addEventListener('keydown', function(event) {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                            searchYouTube();
+                        }
+                    });
+                </script>
+                <button onclick="searchYouTube()" style="width:100%; margin-top:10px;">
+                    search
+                </button>
+            </div>
+
+            <div id="playlist" class="button-grid"></div>
+        </div>
+
+        <div class="dashboard-column">
+            <div class="playlist-manager">
+                <h3 style="margin-top: 0;">playlists</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input id="playlist-name-input" placeholder="what shall you call the playlist..." />
+                    <button onclick="createCustomPlaylist()">+</button>
+                </div>
+                
+                <select id="playlist-select" onchange="switchCustomPlaylist()" style="margin-bottom: 15px;">
+                    <option value="">select a playlist twin✌</option>
+                </select>
+
+                <div id="custom-playlist-container" class="button-grid"></div>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <div id="ytplayer"></div>
@@ -294,6 +560,7 @@
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="spores.js"></script>
 
+<!-- Cloudflare -->
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script>
 
 </body>

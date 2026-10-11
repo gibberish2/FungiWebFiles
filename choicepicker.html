@@ -47,22 +47,28 @@
   <br><br>
   <label for="choice2">Put your second choice here:</label>
   <input type="text" id="choice2" name="choice2"></input>
+  <input type="submit" id="submit" >Ask!</input>
+
   <span id="result"></span>
 
   <script>
     const choice1 = document.getElementById('choice1');
     const choice2 = document.getElementById('choice2');
+    const submit = document.getElementById('submit');
     const result = document.getElementById('result');
     const choice1val = choice1.value; 
     const choice2val = choice2.value; 
+    function decide() {
     let result = math.floor(math.random*2)+1;
     if result === 1 {
-      result.innerhtml = choice1;
+      result.innerhtml = choice1val;
     }else{
-      result.innerhtml = choice2;
+      result.innerhtml = choice2val;
     }
-
-
+    }
+submit.addEventListener('click', () => {
+    decide();
+});
 
 
 <script src="spores.js"></script>

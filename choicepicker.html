@@ -52,25 +52,52 @@
   <span id="result"></span>
 
   <script>
+
+<label for="choice1">Put your first choice here:</label>
+<input type="text" id="choice1" name="choice1">
+
+<br><br>
+
+<label for="choice2">Put your second choice here:</label>
+<input type="text" id="choice2" name="choice2">
+
+<br><br>
+
+<button type="button" id="submit">Ask!</button>
+
+<p id="result" aria-live="polite"></p>
+
+<script>
     const choice1 = document.getElementById('choice1');
     const choice2 = document.getElementById('choice2');
     const submit = document.getElementById('submit');
-    const result = document.getElementById('result');
-    const choice1val = choice1.value; 
-    const choice2val = choice2.value; 
+    const resultElement = document.getElementById('result');
+
     function decide() {
-    let result = math.floor(math.random*2)+1;
-    if result === 1 {
-      result.innerhtml = choice1val;
-    }else{
-      result.innerhtml = choice2val;
-    }
-    }
-submit.addEventListener('click', () => {
-    decide();
-});
+        const choice1val = choice1.value.trim();
+        const choice2val = choice2.value.trim();
 
+        if (!choice1val || !choice2val) {
+            resultElement.textContent = 'Please enter both choices!';
+            return;
+        }
 
+        const randomChoice = Math.floor(Math.random() * 2) + 1;
+
+        if (randomChoice === 1) {
+            resultElement.textContent = choice1val;
+        } else {
+            resultElement.textContent = choice2val;
+        }
+    }
+
+    submit.addEventListener('click', decide);
+</script>
+
+<script src="spores.js"></script>
+
+  </script>
+<p>Made by me with debugging by ai</p>
 <script src="spores.js"></script>
 
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script><!-- End Cloudflare Web Analytics -->

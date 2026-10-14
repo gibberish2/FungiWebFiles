@@ -43,10 +43,10 @@ class Spore {
         this.fadeSpeed = Math.random() * 0.00003 + 0.0001;
         this.parallaxMult = this.size * 0.5;
 
-        this.leafType = Math.floor(Math.random() * 3) + 1;
+        this.imgtype = Math.floor(Math.random() * 3) + 1;
 
-        this.leafimg = new Image();
-        this.leafimg.src = `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/fallLeaf${this.leafType}.png`; }
+        this.img = new Image();
+        this.img.src = `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/backroundspore${this.imgtype}.svg`; }
 
     update() {
         this.y += this.baseSpeedY;

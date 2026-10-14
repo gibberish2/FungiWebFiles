@@ -59,19 +59,19 @@ class Spore {
     }
 
     draw(accent) {
-        if (!this.leafimg.complete || this.leafimg.naturalWidth === 0) {
+        if (!this.img.complete || this.img.naturalWidth === 0) {
             return;
         }
 
         const width = 20 + this.size * 8;
-        const height = width * (this.leafimg.naturalHeight / this.leafimg.naturalWidth);
+        const height = width * (this.img.naturalHeight / this.img.naturalWidth);
 
         ctx.globalAlpha = this.opacity;
         ctx.shadowBlur = 2;
         ctx.shadowColor = '#D07A04';
 
         ctx.drawImage(
-            this.leafimg,
+            this.img,
             this.x - width / 2,
             this.y - height / 2,
             width,

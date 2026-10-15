@@ -1,24 +1,44 @@
 @import url('https://fonts.googleapis.com/css2?family=New+Amsterdam&display=swap');
+
 :root {
     --bg-color: #FFFBEB;      
     --nav-color: #FDE68A;     
     --accent-color: #9A3412;  
     --text-color: #292524;    
-      font-family: "New Amsterdam", sans-serif;
-      font-weight: 400;
-      font-style: normal;
+    --font-main: "New Amsterdam", sans-serif;
+}
+
+/* Base reset for older WebKit / iOS compatibility */
+* {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     margin: 0;
     padding: 0;
+    background-color: #FFFBEB; /* Fallback for very old iOS */
     background-color: var(--bg-color);
+    color: #292524;
     color: var(--text-color);
+    font-family: "New Amsterdam", sans-serif;
     font-family: var(--font-main);
+    font-weight: 400;
+    font-style: normal;
+    display: -webkit-box;
+    display: -webkit-flex;
     display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
     flex-direction: column;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
     align-items: center;
     min-height: 100vh;
+    /* Prevents horizontal scrolling overflow on small iPod screens */
+    overflow-x: hidden; 
 }
 
 /* --- NAVIGATION --- */
@@ -26,33 +46,48 @@ body {
     position: fixed; 
     bottom: 20px; 
     width: 35%;
+    /* Safari 12 fallback: color-mix() is unsupported on iOS 12 */
+    background-color: rgba(253, 230, 138, 0.8);
     background-color: color-mix(in srgb, var(--nav-color), transparent 20%);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
     height: 10vh; 
     z-index: 1000;
+    /* Webkit Flexbox fallbacks for older Apple engines */
+    display: -webkit-box;
+    display: -webkit-flex;
     display: flex; 
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
     justify-content: center; 
+    -webkit-box-align: center;
+    -webkit-align-items: center;
     align-items: center;
     border-radius: 21px;
+    border: 0px solid #9A3412;
     border: 0px solid var(--accent-color);
+    -webkit-transition: all ease-in-out 0.25s;
     transition: all ease-in-out 0.25s;
 }
+
 .navbar:hover {
     border-width: 0.5px;
-    
 }
+
 .nav-link {
     text-decoration: none; 
+    color: #292524;
     color: var(--text-color);
     padding: 10px 12.5px; 
     font-weight: bold; 
+    -webkit-transition: 0.35s;
     transition: 0.35s;
     border-radius: 6px;
     margin: 0 5px;
 }
 
 .nav-link:hover, .nav-link.active {
+    background-color: #9A3412;
     background-color: var(--accent-color);
     color: #0f172a;
     border-radius: 12px;
@@ -64,6 +99,7 @@ body {
     padding: 15px 25px;
     margin: 10px;
     min-width: 120px;
+    border: 2px solid #9A3412;
     border: 2px solid var(--accent-color);
     border-radius: 12px;
     cursor: pointer;
@@ -71,20 +107,24 @@ body {
     font-size: 18px;
     font-weight: bold;
     color: white;
+    background-color: #FDE68A;
     background-color: var(--nav-color);
+    -webkit-transition: all 0.3s ease;
     transition: all 0.3s ease; 
     display: inline-block;
     outline: none;
 }
 
 .theme-btn:hover {
+    -webkit-transform: scale(1.05);
     transform: scale(1.05);
+    background-color: #9A3412;
     background-color: var(--accent-color);
+    color: #FFFBEB;
     color: var(--bg-color);
+    -webkit-box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
     box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
 }
-
-
 
 /* Music/Game Grid Styles */
 .music-grid, .button-grid {
@@ -93,10 +133,20 @@ body {
     gap: 25px;
     width: 90%;
     max-width: 1000px;
+    /* Flexbox fallback for older iOS grid support */
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
 }
 
 .music-card, .game-btn {
     width: 100%;
+    max-width: 280px;
     aspect-ratio: 1 / 1 !important;
     border: none;
     border-radius: 15px;
@@ -107,31 +157,52 @@ body {
     background-size: cover;
     background-position: center;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+    display: -webkit-box;
+    display: -webkit-flex;
     display: flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
     justify-content: center;
+    -webkit-transition: -webkit-transform 0.2s ease, -webkit-box-shadow 0.2s ease, filter 0.2s;
     transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s;
+    margin: 10px;
 }
 
 .music-card:hover, .game-btn:hover {
+    -webkit-transform: scale(1.05);
     transform: scale(1.05);
+    -webkit-box-shadow: 0 0 20px #9A3412;
+    -webkit-box-shadow: 0 0 20px var(--accent-color);
     box-shadow: 0 0 20px var(--accent-color);
+    -webkit-filter: brightness(1.2);
     filter: brightness(1.2);
 }
 
 .music-card:active, .game-btn:active {
+    -webkit-transform: scale(0.98);
     transform: scale(0.98);
 }
 
+/* --- LOADER --- */
 .loader {
   --main-size: 4em;
   --text-color: #ffffff;
   --shine-color: #ffffff40;
   --shadow-color: #aaaaaa;
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
   align-items: center;
   overflow: hidden;
+  -webkit-user-select: none;
   user-select: none;
   position: relative;
   font-size: var(--main-size);
@@ -140,12 +211,19 @@ body {
   color: var(--text-color);
   width: 7.3em;
   height: 1em;
+  -webkit-filter: drop-shadow(0 0 0.05em var(--shine-color));
   filter: drop-shadow(0 0 0.05em var(--shine-color));
 }
 
 .loader .text {
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
   text-align: center;
   white-space: nowrap;
@@ -154,6 +232,7 @@ body {
 }
 
 .loader .text:nth-child(1) {
+  -webkit-clip-path: polygon(0% 0%, 11.11% 0%, 11.11% 100%, 0% 100%);
   clip-path: polygon(0% 0%, 11.11% 0%, 11.11% 100%, 0% 100%);
   font-size: calc(var(--main-size) / 20);
   margin-left: -2.1em;
@@ -161,6 +240,7 @@ body {
 }
 
 .loader .text:nth-child(2) {
+  -webkit-clip-path: polygon(11.11% 0%, 22.22% 0%, 22.22% 100%, 11.11% 100%);
   clip-path: polygon(11.11% 0%, 22.22% 0%, 22.22% 100%, 11.11% 100%);
   font-size: calc(var(--main-size) / 16);
   margin-left: -0.98em;
@@ -168,6 +248,7 @@ body {
 }
 
 .loader .text:nth-child(3) {
+  -webkit-clip-path: polygon(22.22% 0%, 33.33% 0%, 33.33% 100%, 22.22% 100%);
   clip-path: polygon(22.22% 0%, 33.33% 0%, 33.33% 100%, 22.22% 100%);
   font-size: calc(var(--main-size) / 13);
   margin-left: -0.33em;
@@ -175,6 +256,7 @@ body {
 }
 
 .loader .text:nth-child(4) {
+  -webkit-clip-path: polygon(33.33% 0%, 44.44% 0%, 44.44% 100%, 33.33% 100%);
   clip-path: polygon(33.33% 0%, 44.44% 0%, 44.44% 100%, 33.33% 100%);
   font-size: calc(var(--main-size) / 11);
   margin-left: -0.05em;
@@ -182,6 +264,7 @@ body {
 }
 
 .loader .text:nth-child(5) {
+  -webkit-clip-path: polygon(44.44% 0%, 55.55% 0%, 55.55% 100%, 44.44% 100%);
   clip-path: polygon(44.44% 0%, 55.55% 0%, 55.55% 100%, 44.44% 100%);
   font-size: calc(var(--main-size) / 10);
   margin-left: 0em;
@@ -189,6 +272,7 @@ body {
 }
 
 .loader .text:nth-child(6) {
+  -webkit-clip-path: polygon(55.55% 0%, 66.66% 0%, 66.66% 100%, 55.55% 100%);
   clip-path: polygon(55.55% 0%, 66.66% 0%, 66.66% 100%, 55.55% 100%);
   font-size: calc(var(--main-size) / 11);
   margin-left: 0.05em;
@@ -196,6 +280,7 @@ body {
 }
 
 .loader .text:nth-child(7) {
+  -webkit-clip-path: polygon(66.66% 0%, 77.77% 0%, 77.77% 100%, 66.66% 100%);
   clip-path: polygon(66.66% 0%, 77.77% 0%, 77.77% 100%, 66.66% 100%);
   font-size: calc(var(--main-size) / 13);
   margin-left: 0.33em;
@@ -203,6 +288,7 @@ body {
 }
 
 .loader .text:nth-child(8) {
+  -webkit-clip-path: polygon(77.77% 0%, 88.88% 0%, 88.88% 100%, 77.77% 100%);
   clip-path: polygon(77.77% 0%, 88.88% 0%, 88.88% 100%, 77.77% 100%);
   font-size: calc(var(--main-size) / 16);
   margin-left: 0.98em;
@@ -210,6 +296,7 @@ body {
 }
 
 .loader .text:nth-child(9) {
+  -webkit-clip-path: polygon(88.88% 0%, 100% 0%, 100% 100%, 88.88% 100%);
   clip-path: polygon(88.88% 0%, 100% 0%, 100% 100%, 88.88% 100%);
   font-size: calc(var(--main-size) / 20);
   margin-left: 2.1em;
@@ -217,103 +304,92 @@ body {
 }
 
 .loader .text span {
-  animation:
-    scrolling 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite,
-    shadow 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite;
+  -webkit-animation: scrolling 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite, shadow 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite;
+  animation: scrolling 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite, shadow 2s cubic-bezier(0.1, 0.6, 0.9, 0.4) infinite;
 }
 
 .loader .text:nth-child(1) span {
-  background: linear-gradient(
-    to right,
-    var(--text-color) 4%,
-    var(--shadow-color) 7%
-  );
+  background: linear-gradient(to right, var(--text-color) 4%, var(--shadow-color) 7%);
   background-size: 200% auto;
+  -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
 .loader .text:nth-child(2) span {
-  background: linear-gradient(
-    to right,
-    var(--text-color) 9%,
-    var(--shadow-color) 13%
-  );
+  background: linear-gradient(to right, var(--text-color) 9%, var(--shadow-color) 13%);
   background-size: 200% auto;
+  -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
 .loader .text:nth-child(3) span {
-  background: linear-gradient(
-    to right,
-    var(--text-color) 15%,
-    var(--shadow-color) 18%
-  );
+  background: linear-gradient(to right, var(--text-color) 15%, var(--shadow-color) 18%);
   background-size: 200% auto;
+  -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
 .loader .text:nth-child(4) span {
-  background: linear-gradient(
-    to right,
-    var(--text-color) 20%,
-    var(--shadow-color) 23%
-  );
+  background: linear-gradient(to right, var(--text-color) 20%, var(--shadow-color) 23%);
   background-size: 200% auto;
+  -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
 .loader .text:nth-child(6) span {
-  background: linear-gradient(
-    to right,
-    var(--shadow-color) 29%,
-    var(--text-color) 32%
-  );
+  background: linear-gradient(to right, var(--shadow-color) 29%, var(--text-color) 32%);
   background-size: 200% auto;
+  -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
 .loader .text:nth-child(7) span {
-  background: linear-gradient(
-    to right,
-    var(--shadow-color) 34%,
-    var(--text-color) 37%
-  );
+  background: linear-gradient(to right, var(--shadow-color) 34%, var(--text-color) 37%);
   background-size: 200% auto;
+  -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
 .loader .text:nth-child(8) span {
-  background: linear-gradient(
-    to right,
-    var(--shadow-color) 39%,
-    var(--text-color) 42%
-  );
+  background: linear-gradient(to right, var(--shadow-color) 39%, var(--text-color) 42%);
   background-size: 200% auto;
+  -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
 .loader .text:nth-child(9) span {
-  background: linear-gradient(
-    to right,
-    var(--shadow-color) 45%,
-    var(--text-color) 48%
-  );
+  background: linear-gradient(to right, var(--shadow-color) 45%, var(--text-color) 48%);
   background-size: 200% auto;
+  -webkit-background-clip: text;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
   color: transparent;
 }
 
 .loader .line {
   position: relative;
+  display: -webkit-box;
+  display: -webkit-flex;
   display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
   justify-content: center;
   overflow: hidden;
   height: 0.05em;
@@ -338,40 +414,62 @@ body {
   width: 100%;
   background-color: var(--text-color);
   border-radius: 0.05em;
+  -webkit-transform: translateX(-90%);
   transform: translateX(-90%);
+  -webkit-animation: wobble 2s cubic-bezier(0.5, 0.8, 0.5, 0.2) infinite;
   animation: wobble 2s cubic-bezier(0.5, 0.8, 0.5, 0.2) infinite;
 }
 
+/* --- LEGACY HARDWARE MEDIA RESPONSIVENESS (iPod Touch 6th Gen / Small Screens) --- */
+@media only screen and (max-width: 480px) {
+  .navbar {
+    width: 85%; /* Extends width on tiny 4-inch iPod/iPhone touch screens */
+    bottom: 10px;
+    height: 8vh;
+  }
+  .nav-link {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+  .music-card, .game-btn {
+    max-width: 100%;
+    aspect-ratio: auto !important;
+    height: 140px;
+    font-size: 20px;
+  }
+  .theme-btn {
+    padding: 12px 18px;
+    font-size: 16px;
+    min-width: 100px;
+  }
+}
+
+/* --- KEYFRAME ANIMATIONS --- */
+@-webkit-keyframes wobble {
+  0% { -webkit-transform: translateX(-90%); transform: translateX(-90%); }
+  50% { -webkit-transform: translateX(90%); transform: translateX(90%); }
+  100% { -webkit-transform: translateX(-90%); transform: translateX(-90%); }
+}
 @keyframes wobble {
-  0% {
-    transform: translateX(-90%);
-  }
-  50% {
-    transform: translateX(90%);
-  }
-  100% {
-    transform: translateX(-90%);
-  }
+  0% { transform: translateX(-90%); }
+  50% { transform: translateX(90%); }
+  100% { transform: translateX(-90%); }
 }
 
+@-webkit-keyframes scrolling {
+  0% { -webkit-transform: translateX(-100%); transform: translateX(-100%); }
+  100% { -webkit-transform: translateX(100%); transform: translateX(100%); }
+}
 @keyframes scrolling {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
+@-webkit-keyframes shadow {
+  0% { background-position: -98% 0; }
+  100% { background-position: 102% 0; }
+}
 @keyframes shadow {
-  0% {
-    background-position: -98% 0;
-  }
-  100% {
-    background-position: 102% 0;
-  }
+  0% { background-position: -98% 0; }
+  100% { background-position: 102% 0; }
 }
-
-@keyframes wobble { 0% { transform: translateX(-90%); } 50% { transform: translateX(90%); } 100% { transform: translateX(-90%); } }
-@keyframes scrolling { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-@keyframes shadow { 0% { background-position: -98% 0; } 100% { background-position: 102% 0; } }

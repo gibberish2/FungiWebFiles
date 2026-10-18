@@ -1,637 +1,340 @@
-async function getOSDetails() {
-    let osName = 'Unknown OS';
-    let osVersion = 'Unknown Version';
 
+async function getOSDetails() {
     const ua = navigator.userAgent || '';
     const platform = navigator.platform || '';
 
-    // 1. Detect iOS first, including iPads using desktop mode
-    const isIOS =
+    if (
         /iPhone|iPad|iPod/i.test(ua) ||
-        (platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        (platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    ) {
+        const match = ua.match(/OS ([0-9._]+) like Mac OS X/);
 
-    if (isIOS) {
-        osName = 'iOS';
-
-        const iosMatch = ua.match(/OS ([0-9]+(?:[_\.][0-9]+)*)/i);
-
-        if (iosMatch) {
-            osVersion = iosMatch[1].replace(/_/g, '.');
-        }
-
-        return { os: osName, version: osVersion };
+        return {
+            os: 'iOS',
+            version: match ? match[1].replace(/_/g, '.') : 'Unknown Version'
+        };
     }
 
-    // 2. Try the modern User-Agent Client Hints API
     if (navigator.userAgentData) {
         try {
-            const highEntropyData =
-                await navigator.userAgentData.getHighEntropyValues([
-                    'platformVersion'
-                ]);
+            const data = await navigator.userAgentData.getHighEntropyValues([
+                'platformVersion'
+            ]);
 
-            osName = navigator.userAgentData.platform || osName;
-            osVersion = highEntropyData.platformVersion || osVersion;
+            let os = navigator.userAgentData.platform || 'Unknown OS';
+            let version = data.platformVersion || 'Unknown Version';
 
-            // Identify Windows 10 and Windows 11
-            if (osName === 'Windows') {
-                const majorVersion = parseInt(
-                    osVersion.split('.')[0],
-                    10
-                );
+            if (os === 'Windows') {
+                const major = parseInt(version.split('.')[0], 10);
 
-                if (majorVersion >= 13) {
-                    osName = 'Windows 11';
-                    osVersion = '11';
-                } else if (majorVersion > 0) {
-                    osVersion = '10';
+                if (major >= 13) {
+                    os = 'Windows 11';
+                    version = '11';
+                } else if (major > 0) {
+                    version = '10';
                 }
             }
 
-            if (osName !== 'Unknown OS') {
-                return { os: osName, version: osVersion };
-            }
+            return { os, version };
         } catch (e) {
-            console.warn(
-                '[Fungi Spores] OS detection API unavailable; using fallback.'
-            );
+            // Use legacy detection below.
         }
     }
-
-    // 3. Legacy fallback for browsers without Client Hints
 
     if (/Android/i.test(ua)) {
-        osName = 'Android';
-
-        const androidMatch = ua.match(/Android ([0-9.]+)/i);
-
-        if (androidMatch) {
-            osVersion = androidMatch[1];
-        }
-
-    } else if (/Windows|Win32|Win64/i.test(platform + ' ' + ua)) {
-        osName = 'Windows';
-
-        const winMatch = ua.match(/Windows NT ([0-9.]+)/i);
-
-        if (winMatch) {
-            const ntMap = {
-                '10.0': '10',
-                '6.3': '8.1',
-                '6.2': '8',
-                '6.1': '7',
-                '6.0': 'Vista',
-                '5.1': 'XP'
-            };
-
-            osVersion = ntMap[winMatch[1]] || winMatch[1];
-        }
-
-    } else if (/Macintosh|MacIntel|MacPPC|Mac68K/i.test(
-        platform + ' ' + ua
-    )) {
-        osName = 'Mac OS';
-
-        const macMatch = ua.match(/Mac OS X ([0-9._]+)/i);
-
-        if (macMatch) {
-            osVersion = macMatch[1].replace(/_/g, '.');
-        }
-
-    } else if (/Linux/i.test(platform + ' ' + ua)) {
-        osName = 'Linux';
+        const m = ua.match(/Android ([0-9.]+)/i);
+        return { os: 'Android', version: m ? m[1] : 'Unknown Version' };
     }
 
-    return { os: osName, version: osVersion };
+    if (/Windows|Win32|Win64/i.test(platform + ' ' + ua)) {
+        const m = ua.match(/Windows NT ([0-9.]+)/i);
+        const map = {
+            '10.0': '10',
+            '6.3': '8.1',
+            '6.2': '8',
+            '6.1': '7'
+        };
+
+        return {
+            os: 'Windows',
+            version: m ? (map[m[1]] || m[1]) : 'Unknown Version'
+        };
+    }
+
+    if (/Macintosh|MacIntel|MacPPC|Mac68K/i.test(platform + ' ' + ua)) {
+        const m = ua.match(/Mac OS X ([0-9._]+)/i);
+        return {
+            os: 'Mac OS',
+            version: m ? m[1].replace(/_/g, '.') : 'Unknown Version'
+        };
+    }
+
+    if (/Linux/i.test(platform + ' ' + ua)) {
+        return { os: 'Linux', version: 'Unknown Version' };
+    }
+
+    return { os: 'Unknown OS', version: 'Unknown Version' };
 }
 
 
-// ============================================================
-// FUNGI SPORE ANIMATION
-// ============================================================
-
 function startFungiSpores() {
-
-    // Prevent accidentally starting multiple animation loops
-    if (window.__fungiSporesStarted) {
-        return;
-    }
-
+    if (window.__fungiSporesStarted) return;
     window.__fungiSporesStarted = true;
 
-    async function initializeSpores() {
-
+    (async () => {
         try {
+            const details = await getOSDetails();
+            const major = parseInt(details.version, 10);
 
-            // Wait for OS detection
-            let details;
-
-            try {
-                details = await getOSDetails();
-            } catch (error) {
-                details = {
-                    os: 'Unknown OS',
-                    version: 'Unknown Version'
-                };
-            }
-
-            const majorVersion = parseInt(
-                details.version,
-                10
-            );
-
-            // Only disable spores on iOS 17 and below
-            const hideSpores =
+            if (
                 details.os === 'iOS' &&
-                Number.isFinite(majorVersion) &&
-                majorVersion <= 17;
-
-            // Remove any previous canvas
-            const oldCanvas = document.getElementById(
-                'fungi-spore-canvas'
-            );
-
-            if (oldCanvas) {
-                oldCanvas.remove();
-            }
-
-            // Stop here ONLY on detected iOS 17 or earlier
-            if (hideSpores) {
-                console.log(
-                    '[Fungi Spores] Disabled on iOS',
-                    details.version
-                );
-
+                Number.isFinite(major) &&
+                major <= 17
+            ) {
+                console.log('[Fungi Spores] Disabled on iOS', details.version);
                 return;
             }
 
-            // ------------------------------------------------
-            // Particle settings
-            // ------------------------------------------------
+            const oldCanvas = document.getElementById('fungi-spore-canvas');
+            if (oldCanvas) oldCanvas.remove();
 
-            let savedCount = null;
+            const canvas = document.createElement('canvas');
+            canvas.id = 'fungi-spore-canvas';
+
+            Object.assign(canvas.style, {
+                position: 'fixed',
+                inset: '0',
+                width: '100%',
+                height: '100%',
+                zIndex: '0',
+                pointerEvents: 'none'
+            });
+
+            // Insert first, behind normal page content.
+            document.body.prepend(canvas);
+
+            const ctx = canvas.getContext('2d', {
+                alpha: true,
+                desynchronized: true
+            });
+
+            if (!ctx) throw new Error('Canvas is not supported');
+
+            // Load the three SVGs only once.
+            const images = [1, 2, 3].map(n => {
+                const img = new Image();
+                img.src =
+                    `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/backroundspore${n}.svg`;
+                return img;
+            });
+
+            let count = 50;
 
             try {
-                savedCount = localStorage.getItem('sporeCount');
-            } catch (error) {
-                // Local storage may be unavailable
+                const saved = localStorage.getItem('sporeCount');
+                if (saved !== null && saved.trim() !== '') {
+                    const parsed = parseInt(saved, 10);
+                    if (Number.isFinite(parsed)) {
+                        count = Math.max(0, Math.min(100, parsed));
+                    }
+                }
+            } catch (e) {}
+
+            let particles = [];
+            let width = 0;
+            let height = 0;
+            let frameId = 0;
+            let lastFrame = 0;
+            let accent = '#D07A04';
+            let frameCounter = 0;
+
+            function resize() {
+                // Limit pixel density to reduce GPU/CPU work.
+                const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+
+                width = window.innerWidth;
+                height = window.innerHeight;
+
+                canvas.width = Math.round(width * dpr);
+                canvas.height = Math.round(height * dpr);
+
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             }
 
-            let particleCount = 50;
+            class Spore {
+                constructor(randomY = true) {
+                    this.reset(randomY);
+                    this.imageIndex = Math.floor(Math.random() * images.length);
+                }
 
-            if (savedCount !== null) {
-                const parsedCount = parseInt(savedCount, 10);
+                reset(randomY = false) {
+                    this.x = Math.random() * width;
+                    this.y = randomY ? Math.random() * height : -20;
+                    this.size = 16 + Math.random() * 24;
+                    this.speedY = 0.3 + Math.random() * 0.65;
+                    this.speedX = (Math.random() - 0.5) * 0.3;
+                    this.opacity = randomY ? 0.35 + Math.random() * 0.55 : 0.8;
+                    this.fade = 0.00004 + Math.random() * 0.00008;
+                    this.rotation = Math.random() * Math.PI * 2;
+                    this.rotationSpeed = (Math.random() - 0.5) * 0.004;
+                }
 
-                if (Number.isFinite(parsedCount)) {
-                    particleCount = Math.max(
-                        0,
-                        Math.min(300, parsedCount)
-                    );
+                update(delta) {
+                    this.x += this.speedX * delta;
+                    this.y += this.speedY * delta;
+                    this.opacity -= this.fade * delta;
+                    this.rotation += this.rotationSpeed * delta;
+
+                    if (this.y > height + 30 || this.opacity <= 0) {
+                        this.reset(false);
+                    }
+
+                    // Wrap horizontally instead of leaving particles stuck offscreen.
+                    if (this.x < -30) this.x = width + 30;
+                    if (this.x > width + 30) this.x = -30;
+                }
+
+                draw() {
+                    if (this.opacity <= 0) return;
+
+                    const img = images[this.imageIndex];
+                    const imageReady = img.complete && img.naturalWidth > 0;
+
+                    ctx.globalAlpha = Math.max(0, Math.min(1, this.opacity));
+
+                    if (imageReady) {
+                        const aspect = img.naturalHeight / img.naturalWidth;
+                        const w = this.size;
+                        const h = w * (Number.isFinite(aspect) && aspect > 0 ? aspect : 1);
+
+                        ctx.save();
+                        ctx.translate(this.x, this.y);
+                        ctx.rotate(this.rotation);
+                        ctx.drawImage(img, -w / 2, -h / 2, w, h);
+                        ctx.restore();
+                    } else {
+                        // Cheap fallback: no shadows or expensive effects.
+                        ctx.fillStyle = accent;
+                        ctx.beginPath();
+                        ctx.ellipse(
+                            this.x,
+                            this.y,
+                            this.size * 0.18,
+                            this.size * 0.35,
+                            this.rotation,
+                            0,
+                            Math.PI * 2
+                        );
+                        ctx.fill();
+                    }
                 }
             }
 
-            let particles = [];
+            function initParticles() {
+                if (particles.length > count) {
+                    particles.length = count;
+                }
 
-            // ------------------------------------------------
-            // Create the canvas
-            // ------------------------------------------------
-
-            const canvas = document.createElement('canvas');
-
-            canvas.id = 'fungi-spore-canvas';
-            canvas.setAttribute('aria-hidden', 'true');
-
-            // Important: put the canvas above normal page
-            // content so that wrappers cannot hide the spores.
-            // pointer-events:none keeps the website clickable.
-            canvas.style.setProperty(
-                'position',
-                'fixed',
-                'important'
-            );
-
-            canvas.style.setProperty(
-                'top',
-                '0',
-                'important'
-            );
-
-            canvas.style.setProperty(
-                'left',
-                '0',
-                'important'
-            );
-
-            canvas.style.setProperty(
-                'width',
-                '100vw',
-                'important'
-            );
-
-            canvas.style.setProperty(
-                'height',
-                '100vh',
-                'important'
-            );
-
-            canvas.style.setProperty(
-                'z-index',
-                '2147483647',
-                'important'
-            );
-
-            canvas.style.setProperty(
-                'pointer-events',
-                'none',
-                'important'
-            );
-
-            canvas.style.setProperty(
-                'display',
-                'block',
-                'important'
-            );
-
-            canvas.style.setProperty(
-                'visibility',
-                'visible',
-                'important'
-            );
-
-            canvas.style.setProperty(
-                'opacity',
-                '1',
-                'important'
-            );
-
-            // Attach to the body without modifying the position
-            // or z-index of the rest of the website.
-            document.body.appendChild(canvas);
-
-            const ctx = canvas.getContext('2d');
-
-            if (!ctx) {
-                console.error(
-                    '[Fungi Spores] Could not create 2D canvas context.'
-                );
-
-                canvas.remove();
-                return;
+                while (particles.length < count) {
+                    particles.push(new Spore());
+                }
             }
 
-            // ------------------------------------------------
-            // Canvas resizing
-            // ------------------------------------------------
+            function animate(timestamp) {
+                frameId = 0;
 
-            function resize() {
-                const dpr = Math.min(
-                    window.devicePixelRatio || 1,
-                    2
-                );
+                // Stop drawing when the tab is hidden.
+                if (document.hidden) {
+                    lastFrame = 0;
+                    return;
+                }
 
-                canvas.width = Math.round(
-                    window.innerWidth * dpr
-                );
+                // Cap to 30 FPS for substantially less work.
+                if (timestamp - lastFrame < 33) {
+                    frameId = requestAnimationFrame(animate);
+                    return;
+                }
 
-                canvas.height = Math.round(
-                    window.innerHeight * dpr
-                );
+                const delta = lastFrame
+                    ? Math.min((timestamp - lastFrame) / 16.67, 2)
+                    : 1;
 
-                ctx.setTransform(
-                    dpr,
-                    0,
-                    0,
-                    dpr,
-                    0,
-                    0
-                );
+                lastFrame = timestamp;
+
+                ctx.clearRect(0, 0, width, height);
+
+                // Update theme color occasionally, not for every particle.
+                if (frameCounter++ % 30 === 0) {
+                    accent = getComputedStyle(document.documentElement)
+                        .getPropertyValue('--accent-color').trim() || '#D07A04';
+                }
+
+                for (const p of particles) {
+                    p.update(delta);
+                    p.draw();
+                }
+
+                ctx.globalAlpha = 1;
+                frameId = requestAnimationFrame(animate);
             }
+
+            function startAnimation() {
+                if (!frameId && !document.hidden) {
+                    lastFrame = 0;
+                    frameId = requestAnimationFrame(animate);
+                }
+            }
+
+            function stopAnimation() {
+                if (frameId) cancelAnimationFrame(frameId);
+                frameId = 0;
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    stopAnimation();
+                } else {
+                    startAnimation();
+                }
+            });
 
             window.addEventListener('resize', resize);
 
-            resize();
-
-            // ------------------------------------------------
-            // Spore image loading
-            // ------------------------------------------------
-
-            const warnedImageUrls = new Set();
-
-            class Spore {
-
-                constructor() {
-                    // Choose one of the original SVG images
-                    this.imgtype =
-                        Math.floor(Math.random() * 3) + 1;
-
-                    this.img = new Image();
-
-                    const imageUrl =
-                        `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/backroundspore${this.imgtype}.svg`;
-
-                    this.img.onerror = () => {
-
-                        // Warn only once per failed image URL.
-                        // The fallback spores still render.
-                        if (!warnedImageUrls.has(imageUrl)) {
-                            warnedImageUrls.add(imageUrl);
-
-                            console.warn(
-                                '[Fungi Spores] SVG unavailable; drawing fallback:',
-                                imageUrl
-                            );
-                        }
-                    };
-
-                    this.img.src = imageUrl;
-
-                    this.init(true);
-                }
-
-                init(randomY = false) {
-                    this.x =
-                        Math.random() * window.innerWidth;
-
-                    this.y = randomY
-                        ? Math.random() * window.innerHeight
-                        : -50;
-
-                    this.size = Math.random() * 4;
-
-                    this.baseSpeedY =
-                        Math.random() * 0.8 + 0.3;
-
-                    this.speedX =
-                        (Math.random() - 0.5) * 0.5;
-
-                    this.opacity = randomY
-                        ? Math.random()
-                        : 1;
-
-                    this.fadeSpeed =
-                        Math.random() * 0.00003 + 0.0001;
-
-                    this.rotation =
-                        Math.random() * Math.PI * 2;
-
-                    this.rotationSpeed =
-                        (Math.random() - 0.5) * 0.01;
-
-                    this.parallaxMult = this.size * 0.5;
-                }
-
-                update() {
-                    this.y += this.baseSpeedY;
-                    this.x += this.speedX;
-
-                    this.opacity -= this.fadeSpeed;
-
-                    this.rotation += this.rotationSpeed;
-
-                    // Recycle spores when they fade or leave
-                    // the screen.
-                    if (
-                        this.opacity <= 0 ||
-                        this.y > window.innerHeight + 50
-                    ) {
-                        this.init(false);
-                    }
-                }
-
-                draw(accent) {
-
-                    const width = 20 + this.size * 8;
-
-                    // Clamp opacity to a valid canvas value
-                    const opacity = Math.max(
-                        0,
-                        Math.min(1, this.opacity)
-                    );
-
-                    // ----------------------------------------
-                    // Preferred rendering: original SVG
-                    // ----------------------------------------
-
-                    if (
-                        this.img.complete &&
-                        this.img.naturalWidth > 0 &&
-                        this.img.naturalHeight > 0
-                    ) {
-
-                        const height =
-                            width *
-                            (
-                                this.img.naturalHeight /
-                                this.img.naturalWidth
-                            );
-
-                        ctx.save();
-
-                        ctx.globalAlpha = opacity;
-
-                        ctx.shadowBlur = 2;
-                        ctx.shadowColor = '#D07A04';
-
-                        ctx.translate(this.x, this.y);
-                        ctx.rotate(this.rotation);
-
-                        ctx.drawImage(
-                            this.img,
-                            -width / 2,
-                            -height / 2,
-                            width,
-                            height
-                        );
-
-                        ctx.restore();
-
-                        return;
-                    }
-
-                    // ----------------------------------------
-                    // Fallback rendering: always visible spores
-                    // ----------------------------------------
-
-                    // These draw immediately while the images
-                    // load, and remain if the images fail.
-                    const color = accent || '#D07A04';
-
-                    const height = width * 0.8;
-
-                    ctx.save();
-
-                    ctx.translate(this.x, this.y);
-                    ctx.rotate(this.rotation);
-
-                    ctx.globalAlpha = opacity;
-
-                    ctx.shadowBlur = 7;
-                    ctx.shadowColor = color;
-
-                    ctx.fillStyle = color;
-                    ctx.strokeStyle = color;
-
-                    // Main spore body
-                    ctx.beginPath();
-
-                    ctx.ellipse(
-                        0,
-                        0,
-                        width * 0.19,
-                        height * 0.36,
-                        0,
-                        0,
-                        Math.PI * 2
-                    );
-
-                    ctx.fill();
-
-                    // Small highlight
-                    ctx.shadowBlur = 0;
-
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-
-                    ctx.beginPath();
-
-                    ctx.ellipse(
-                        -width * 0.045,
-                        -height * 0.09,
-                        width * 0.045,
-                        height * 0.09,
-                        -0.25,
-                        0,
-                        Math.PI * 2
-                    );
-
-                    ctx.fill();
-
-                    ctx.restore();
-                }
-            }
-
-            // ------------------------------------------------
-            // Initialize the particle array
-            // ------------------------------------------------
-
-            function initParticles() {
-
-                if (particles.length > particleCount) {
-                    particles.splice(particleCount);
-
-                } else {
-
-                    while (particles.length < particleCount) {
-                        particles.push(new Spore());
-                    }
-                }
-            }
-
-            // ------------------------------------------------
-            // Support the existing Fungi settings event
-            // ------------------------------------------------
-
-            window.addEventListener('updateSpores', (e) => {
-
-                const newCount = parseInt(e.detail, 10);
-
-                particleCount = Number.isFinite(newCount)
-                    ? Math.max(0, Math.min(300, newCount))
+            window.addEventListener('updateSpores', e => {
+                const parsed = parseInt(e.detail, 10);
+                count = Number.isFinite(parsed)
+                    ? Math.max(0, Math.min(100, parsed))
                     : 50;
 
                 try {
-                    localStorage.setItem(
-                        'sporeCount',
-                        particleCount
-                    );
-                } catch (error) {
-                    // Animation still works without local storage
-                }
+                    localStorage.setItem('sporeCount', count);
+                } catch (err) {}
 
                 initParticles();
             });
 
-            // ------------------------------------------------
-            // Animation loop
-            // ------------------------------------------------
-
-            let frameCount = 0;
-
-            let accent = getComputedStyle(
-                document.documentElement
-            ).getPropertyValue('--accent-color').trim()
-                || '#D07A04';
-
-            function animate() {
-
-                ctx.clearRect(
-                    0,
-                    0,
-                    window.innerWidth,
-                    window.innerHeight
-                );
-
-                // Refresh the theme accent periodically
-                if (frameCount % 60 === 0) {
-
-                    accent = getComputedStyle(
-                        document.documentElement
-                    ).getPropertyValue('--accent-color').trim()
-                        || '#D07A04';
-                }
-
-                frameCount++;
-
-                for (const spore of particles) {
-                    spore.update();
-                    spore.draw(accent);
-                }
-
-                requestAnimationFrame(animate);
-            }
-
-            // ------------------------------------------------
-            // START
-            // ------------------------------------------------
-
+            resize();
             initParticles();
+            startAnimation();
 
-            animate();
-
-            console.log('[Fungi Spores] Initialization complete.');
-            console.log('OS:', details.os);
-            console.log('OS version:', details.version);
-            console.log('Spores disabled:', hideSpores);
-            console.log('Particle count:', particleCount);
-            console.log('Canvas:', canvas);
-            console.log(
-                'Fallback spores enabled: true'
-            );
+            console.log('[Fungi Spores] Optimized animation started.', {
+                os: details.os,
+                version: details.version,
+                count
+            });
 
         } catch (error) {
-
-            console.error(
-                '[Fungi Spores] Initialization failed:',
-                error
-            );
-
             window.__fungiSporesStarted = false;
+            console.error('[Fungi Spores] Error:', error);
         }
-    }
-
-    initializeSpores();
+    })();
 }
 
 
-
 if (document.readyState === 'loading') {
-
-    document.addEventListener(
-        'DOMContentLoaded',
-        startFungiSpores,
-        { once: true }
-    );
-
+    document.addEventListener('DOMContentLoaded', startFungiSpores, {
+        once: true
+    });
 } else {
-
     startFungiSpores();
 }

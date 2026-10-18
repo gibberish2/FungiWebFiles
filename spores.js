@@ -130,8 +130,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     document.body.appendChild(canvas);
 
-    canvas.style.cssText =
-        'position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:-1; pointer-events:none;';
+canvas.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    pointer-events: none;
+`;
 
     // Update spore count from settings
     window.addEventListener('updateSpores', (e) => {

@@ -1,57 +1,94 @@
 ```js
 async function getOSDetails() {
-    const ua = navigator.userAgent;
-    const platform = navigator.platform;
-
     let osName = 'Unknown OS';
     let osVersion = 'Unknown Version';
 
-    // Detect iOS, including iPads in desktop mode
+    const ua = navigator.userAgent;
+    const platform = navigator.platform;
+
+    // 1. Detect iOS first, including iPads using desktop mode
     if (
         /iPhone|iPad|iPod/i.test(ua) ||
         (platform === 'MacIntel' && navigator.maxTouchPoints > 1)
     ) {
         osName = 'iOS';
 
-        const match = ua.match(/OS ([0-9_]+) like Mac OS X/);
-        if (match) osVersion = match[1].replace(/_/g, '.');
+        const iosMatch = ua.match(/OS ([0-9._]+) like Mac OS X/);
+
+        if (iosMatch) {
+            osVersion = iosMatch[1].replace(/_/g, '.');
+        }
 
         return { os: osName, version: osVersion };
     }
 
-    // Modern browser OS detection
+    // 2. Modern User-Agent Client Hints API
     if (navigator.userAgentData) {
+        osName = navigator.userAgentData.platform;
+
         try {
-            const data = await navigator.userAgentData.getHighEntropyValues([
-                'platformVersion'
-            ]);
+            const highEntropyData =
+                await navigator.userAgentData.getHighEntropyValues([
+                    'platformVersion'
+                ]);
 
-            osName = navigator.userAgentData.platform;
-            osVersion = data.platformVersion || 'Unknown Version';
+            osVersion = highEntropyData.platformVersion;
 
+            // Special fix for Windows
             if (osName === 'Windows') {
-                const major = parseInt(osVersion, 10);
-                osName = major >= 13 ? 'Windows 11' : 'Windows';
-                if (major > 0 && major < 13) osVersion = '10';
-            }
+                const majorVersion = parseInt(osVersion.split('.')[0], 10);
 
-            return { os: osName, version: osVersion };
+                if (majorVersion >= 13) {
+                    osName = 'Windows 11';
+                } else if (majorVersion > 0) {
+                    osName = 'Windows 10';
+                    osVersion = '10';
+                }
+            }
         } catch (e) {
-            osName = navigator.userAgentData.platform;
+            // Fall back to the information already available
         }
+
+        return { os: osName, version: osVersion };
     }
 
-    // Legacy fallback
-    if (/Windows/i.test(ua)) {
-        osName = 'Windows';
-        osVersion = /Windows NT 10/.test(ua) ? '10' : 'Unknown Version';
+    // 3. Legacy fallback (Firefox, Safari, older browsers)
+
+    if (/Macintosh|MacIntel|MacPPC|Mac68K/.test(platform)) {
+        osName = 'Mac OS';
+
+        const macMatch = ua.match(/Mac OS X ([0-9._]+)/);
+
+        if (macMatch) {
+            osVersion = macMatch[1].replace(/_/g, '.');
+        }
+
     } else if (/Android/i.test(ua)) {
         osName = 'Android';
-        osVersion = ua.match(/Android ([0-9.]+)/)?.[1] || 'Unknown Version';
-    } else if (/Macintosh|Mac OS X/i.test(ua)) {
-        osName = 'Mac OS';
-        osVersion = ua.match(/Mac OS X ([0-9._]+)/)?.[1]?.replace(/_/g, '.') || 'Unknown Version';
-    } else if (/Linux/i.test(ua)) {
+
+        const androidMatch = ua.match(/Android ([0-9.]+)/);
+
+        if (androidMatch) {
+            osVersion = androidMatch[1];
+        }
+
+    } else if (/Win32|Win64|Windows/i.test(platform)) {
+        osName = 'Windows';
+
+        const winMatch = ua.match(/Windows NT ([0-9.]+)/);
+
+        if (winMatch) {
+            const ntMap = {
+                '10.0': '10',
+                '6.3': '8.1',
+                '6.2': '8',
+                '6.1': '7'
+            };
+
+            osVersion = ntMap[winMatch[1]] || winMatch[1];
+        }
+
+    } else if (/Linux/i.test(platform)) {
         osName = 'Linux';
     }
 
@@ -59,10 +96,20 @@ async function getOSDetails() {
 }
 
 
+// How to use it:
+getOSDetails().then(details => {
+    console.log(`OS: ${details.os}`);
+    console.log(`Version: ${details.version}`);
+});
+
+
 document.addEventListener('DOMContentLoaded', async () => {
+
+    // Wait for OS detection before initializing spores
     const details = await getOSDetails();
     const majorVersion = parseInt(details.version, 10);
 
+    // Only disable spores on iOS 17 and below
     const hideSpores =
         details.os === 'iOS' &&
         Number.isFinite(majorVersion) &&
@@ -70,44 +117,82 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let particleCount = hideSpores
         ? 0
-        : Math.max(0, parseInt(localStorage.getItem('sporeCount'), 10) || 50);
+        : (parseInt(localStorage.getItem('sporeCount'), 10) || 50);
 
     let particles = [];
+    let lastScrollY = window.scrollY;
+    let scrollDelta = 0;
 
-    // Create the canvas
+    // Create canvas
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
     canvas.id = 'fungi-spore-canvas';
 
-    Object.assign(canvas.style, {
-        position: 'fixed',
-        inset: '0',
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-        zIndex: '0'
-    });
-
     document.body.appendChild(canvas);
 
-    // Keep the canvas above the page background
-    // but below normal page content.
-    if (getComputedStyle(document.body).position === 'static') {
-        document.body.style.position = 'relative';
-    }
+    // Keep spores above the page background but behind page content
+    canvas.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+        pointer-events: none;
+    `;
+
+    // Put the canvas behind the page's normal content
+    document.body.style.isolation = 'isolate';
+
+    // Move normal direct body content above the canvas
+    Array.from(document.body.children).forEach(element => {
+        if (element !== canvas) {
+            const position = getComputedStyle(element).position;
+
+            if (position === 'static') {
+                element.style.position = 'relative';
+            }
+
+            if (getComputedStyle(element).zIndex === 'auto') {
+                element.style.zIndex = '1';
+            }
+        }
+    });
+
+    window.addEventListener('updateSpores', (e) => {
+        // Do not allow settings to enable spores on iOS 17 and below
+        if (hideSpores) return;
+
+        const newCount = parseInt(e.detail, 10);
+
+        particleCount = Number.isFinite(newCount)
+            ? Math.max(0, newCount)
+            : 50;
+
+        localStorage.setItem('sporeCount', particleCount);
+
+        initParticles();
+    });
+
+    window.addEventListener('scroll', () => {
+        scrollDelta = window.scrollY - lastScrollY;
+        lastScrollY = window.scrollY;
+    }, { passive: true });
+
 
     function resize() {
         const dpr = window.devicePixelRatio || 1;
 
-        canvas.width = Math.floor(window.innerWidth * dpr);
-        canvas.height = Math.floor(window.innerHeight * dpr);
+        canvas.width = Math.round(window.innerWidth * dpr);
+        canvas.height = Math.round(window.innerHeight * dpr);
 
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     window.addEventListener('resize', resize);
     resize();
+
 
     class Spore {
         constructor() {
@@ -116,6 +201,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         init(randomY = false) {
             this.x = Math.random() * window.innerWidth;
+
             this.y = randomY
                 ? Math.random() * window.innerHeight
                 : -50;
@@ -125,16 +211,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             this.speedX = (Math.random() - 0.5) * 0.5;
             this.opacity = randomY ? Math.random() : 1;
             this.fadeSpeed = Math.random() * 0.00003 + 0.0001;
+            this.parallaxMult = this.size * 0.5;
 
             this.imgtype = Math.floor(Math.random() * 3) + 1;
+
             this.img = new Image();
 
             this.img.src =
                 `https://cdn.jsdelivr.net/gh/gibberish2/FungiWebFiles@main/sporeImages/backroundspore${this.imgtype}.svg`;
-
-            this.img.onerror = () => {
-                console.error('Failed to load spore:', this.img.src);
-            };
         }
 
         update() {
@@ -150,14 +234,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
 
-        draw() {
-            if (!this.img.complete || !this.img.naturalWidth) return;
+        draw(accent) {
+            if (
+                !this.img.complete ||
+                this.img.naturalWidth === 0
+            ) {
+                return;
+            }
 
             const width = 20 + this.size * 8;
-            const height =
-                width * (this.img.naturalHeight / this.img.naturalWidth);
 
-            ctx.globalAlpha = Math.max(0, this.opacity);
+            const height =
+                width *
+                (this.img.naturalHeight / this.img.naturalWidth);
+
+            ctx.globalAlpha = this.opacity;
             ctx.shadowBlur = 2;
             ctx.shadowColor = '#D07A04';
 
@@ -174,46 +265,63 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+
+    /* OG SPORE CIRCLES
+
+    draw(accent) {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = accent;
+        ctx.globalAlpha = this.opacity;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = accent;
+        ctx.fill();
+    }
+
+    */
+
+
     function initParticles() {
         if (particles.length > particleCount) {
-            particles.length = particleCount;
-        }
-
-        while (particles.length < particleCount) {
-            particles.push(new Spore());
+            particles.splice(particleCount);
+        } else {
+            while (particles.length < particleCount) {
+                particles.push(new Spore());
+            }
         }
     }
 
-    window.addEventListener('updateSpores', (e) => {
-        if (hideSpores) return;
-
-        const count = parseInt(e.detail, 10);
-
-        particleCount = Number.isFinite(count)
-            ? Math.max(0, count)
-            : 50;
-
-        localStorage.setItem('sporeCount', particleCount);
-        initParticles();
-    });
 
     function animate() {
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        ctx.clearRect(
+            0,
+            0,
+            window.innerWidth,
+            window.innerHeight
+        );
 
-        particles.forEach(spore => {
-            spore.update();
-            spore.draw();
+        const accent = getComputedStyle(
+            document.documentElement
+        ).getPropertyValue('--accent-color').trim();
+
+        particles.forEach(p => {
+            p.update();
+            p.draw(accent);
         });
+
+        scrollDelta *= 0.9;
 
         requestAnimationFrame(animate);
     }
 
+
+    // Start animation
     initParticles();
     animate();
 
-    console.log('Detected OS:', details.os);
-    console.log('Detected version:', details.version);
-    console.log('Spores hidden:', hideSpores);
-    console.log('Initial particle count:', particleCount);
+    console.log('OS:', details.os);
+    console.log('OS version:', details.version);
+    console.log('Spores disabled:', hideSpores);
+    console.log('Particle count:', particleCount);
 });
 ```

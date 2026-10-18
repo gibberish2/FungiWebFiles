@@ -94,7 +94,9 @@ const majorVersion = parseInt(osVersion, 10);
 
 if (osName === "iOS" && majorVersion < 17) {
   particleCount = 3;
-}
+}else{
+  particleCount = 50;
+};
 
 class Spore {
     constructor() {

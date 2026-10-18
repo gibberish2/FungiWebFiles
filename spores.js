@@ -1,4 +1,3 @@
-```js
 async function getOSDetails() {
     let osName = 'Unknown OS';
     let osVersion = 'Unknown Version';

@@ -295,7 +295,15 @@ function startFungiSpores() {
     });
 
     window.addEventListener('resize', resize);
-
+    Object.assign(canvas.style, {
+        position: 'fixed',
+        inset: '0',
+        width: '100%',
+        height: '100%',
+        zIndex: '-1',           // Pushes it behind the document body and normal flow
+        pointerEvents: 'none',  // Ensures mouse clicks pass straight through to elements underneath
+        background: 'transparent' // Prevents it from blocking underlying background colors
+    });
     window.addEventListener('updateSpores', e => {
         const parsed = parseInt(e.detail, 10);
         count = Number.isFinite(parsed) ? Math.max(0, Math.min(100, parsed)) : 50;

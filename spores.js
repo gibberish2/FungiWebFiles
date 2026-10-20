@@ -250,7 +250,7 @@ function startFungiSpores() {
                 }
 
                 // Cap to 30 FPS for substantially less work.
-                if (timestamp - lastFrame < 33) {
+                if (timestamp - lastFrame < 60) {
                     frameId = requestAnimationFrame(animate);
                     return;
                 }
@@ -266,7 +266,7 @@ function startFungiSpores() {
                 // Update theme color occasionally, not for every particle.
                 if (frameCounter++ % 30 === 0) {
                     accent = getComputedStyle(document.documentElement)
-                        .getPropertyValue('--accent-color').trim() || '#D07A04';
+                        .getPropertyValue('--accent-color').trim();
                 }
 
                 for (const p of particles) {

@@ -134,38 +134,12 @@ input, button, select, textarea {
     <div class="nav-container">
         <a href="index.html" class="nav-link" title = "Brings you to the home page" alt = "home page navigation button">Home</a>
         <a href="launcher.html" class="nav-link" title = "Brings you to the games page" alt = "games page navigation button">Games</a>
-        <a href="tools.html" class="nav-link active" title = "Brings you to the tools page" alt = "tools page navigation button">Tools</a>
+        <a href="tools.html" class="nav-link" title = "Brings you to the tools page" alt = "tools page navigation button">Tools</a>
         <a href="music.html" class="nav-link" title = "Brings you to the music page" alt = "music page navigation button">Music</a>
-        <a href="about.html" class="nav-link" title = "Brings you to the about page" alt = "about page navigation button">About</a>
-        <a href="settings.html" class="nav-link" title = "Brings you to the settings page" alt = "settings page navigation button">Settings</a>
+        <a href="about.html" class="nav-link active" title = "Brings you to the about page" alt = "about page navigation button">About</a>
     </div>
 </nav>
-<!-- GLOBAL MUSIC POPUP -->
-<div id="music-popup" class="popup-player">
-    <div class="resizer t"></div><div class="resizer b"></div>
-    <div class="resizer l"></div><div class="resizer r"></div>
-    <div class="resizer tl"></div><div class="resizer tr"></div>
-    <div class="resizer bl"></div><div class="resizer br"></div>
 
-    <div class="popup-header" style="cursor: move;">
-        <span id="popup-title">Nothing Playing</span>
-        <button onclick="togglePopup(false)" style="background:#DE3412; border-radius:5px; color:white; cursor:pointer; font-weight:bold;">×</button>
-    </div>
-    
-    <div class="popup-controls">
-        <button onclick="skip(-10)" class="ctrl-btn">«</button>
-        <button id="master-play-btn" onclick="togglePlay()" class="ctrl-btn">▶</button>
-        <button onclick="skip(10)" class="ctrl-btn">»</button>
-    </div>
-
-    <!-- Fix: forced overflow-x hidden and enabled y-axis scrollbar -->
-    <div id="playlist" style="margin-top:10px; max-height: 50vh; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 10px; width: 100%; box-sizing: border-box;"></div>
-
-    <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px; width: 100%;">
-        <span>🎚</span>
-        <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5" oninput="adjustVolume(this.value)" style="flex-grow: 1; accent-color: var(--accent-color);">
-    </div>
-</div>
 <!-- LOVE TESTER SECTION -->
 <div class="content" style="margin-top: 50px;">
     <h2 class="glow-text">Fungi Love Tester</h2>

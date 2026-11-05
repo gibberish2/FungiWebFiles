@@ -155,13 +155,15 @@
             }
         }
 
-        loadTemplate();
-        setTimeout(() => {
-            document.addEventListener('click', function() {
-            // Reload the current page from the server
-            window.location.reload();
-        });
-}, 1000); // 1000 milliseconds
+async function initialize() {
+    await loadTemplate(); // Wait until the template is 100% loaded
+    
+    setTimeout(() => {
+        document.addEventListener('click', () => window.location.reload(), { once: true });
+    }, 1000);
+}
+
+initialize();
     </script>
     <script src="spores.js"></script>
     <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "2fb5e9188fd9485ca71dcc4ab49bf350"}'></script>

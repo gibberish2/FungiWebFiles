@@ -149,7 +149,7 @@ function startFungiSpores() {
                 }
             });
 
-            let count = 50;
+            let count = 25;
 
             try {
                 const saved = localStorage.getItem('sporeCount');

@@ -1,7 +1,9 @@
-
 // ==========================================
 // YOUTUBE PLAYER AND PLAYLIST VARIABLES
 // ==========================================
+
+// YouTube Data API key. Restrict this key to your site and the YouTube Data API.
+const FUNGI_YOUTUBE_API_KEY = "AIzaSyDB3ijq7TdKKElkH16woL4htaUCCHVVCB4";
 
 // Stores the YouTube player object once the YouTube API creates it.
 let player;
@@ -109,66 +111,7 @@ function handleStateChange(e) {
 }
 
 
-// ==========================================
-// YOUTUBE SEARCH FUNCTION
-// ==========================================
-
-// Searches YouTube for videos matching the user's search input.
-window.searchYouTube = async function() {
-
-    // Gets the search input element from the HTML.
-    const searchInput = document.getElementById("search-input");
-
-    // Gets the text typed by the user and removes extra spaces.
-    // If the input element doesn't exist, uses an empty string.
-    const query = searchInput ? searchInput.value.trim() : "";
-
-    // Stops the function if the user hasn't entered anything.
-    if (!query) return;
-
-    // YouTube Data API key used to access YouTube search results.
-    const blopyblim = "AIzaSyDB3ijq7TdKKElkH16woL4htaUCCHVVCB4";
-
-    try {
-
-        // Sends a request to YouTube's API to search for videos.
-        // encodeURIComponent makes the search text safe to put in a URL.
-        const res = await fetch(
-            `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&q=${encodeURIComponent(query)}&maxResults=10&key=${blopyblim}`
-        );
-
-        // Converts the API response into a JavaScript object.
-        const data = await res.json();
-
-        // If YouTube doesn't return a list of results, show an error.
-        if (!data.items) {
-            alert("You might wanna check your end because I know my end is a-okay");
-            return;
-        }
-
-        // Converts YouTube's search results into a simpler format.
-        // Each song object stores its video ID, title, channel, and thumbnail.
-        queue = data.items.map(item => ({
-            id: item.id.videoId,
-            title: item.snippet.title,
-            channel: item.snippet.channelTitle,
-            channelId: item.snippet.channelId,
-            image: item.snippet.thumbnails.medium ? item.snippet.thumbnails.medium.url : item.snippet.thumbnails.default.url
-        }));
-
-        // Resets playback to the first result.
-        currentIndex = 0;
-
-        // Updates the visible playlist on the page.
-        renderQueue();
-
-    } catch (err) {
-
-        // Prints any errors that happen during the search.
-        console.error(err);
-    }
-};
-searchArtists()
+// The combined Fungi search is defined in the artist/search section below.
 
 // ==========================================
 // PLAY SONG FROM QUEUE
@@ -304,8 +247,7 @@ window.adjustVolume = function(v) {
 
     // Makes sure the player exists and supports volume adjustment.
     if (!player || typeof player.setVolume !== 'function') return;
-
-    // YouTube expects volume values from 0 to 100,
+        // YouTube expects volume values from 0 to 100,
     // so multiplying by 100 converts the input value.
     player.setVolume(v * 100);
 };
@@ -553,8 +495,7 @@ function renderCustomPlaylistView() {
 
     // Gets the songs stored in the currently selected playlist.
     const songs = customPlaylists[currentCustomPlaylistName];
-
-    // Creates a toolbar for the playlist title and its buttons.
+        // Creates a toolbar for the playlist title and its buttons.
     const toolbar = document.createElement("div");
     toolbar.style.cssText = "grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;";
 
@@ -709,4 +650,569 @@ function renderCustomPlaylistView() {
         // Adds the finished song to the page.
         container.appendChild(div);
     });
+}
+
+// ==========================================
+// FUNGI ARTIST + COMBINED SEARCH SYSTEM
+// ==========================================
+
+// Artists saved on this browser. This does not require a database.
+let fungiSavedArtists = [];
+try {
+    fungiSavedArtists = JSON.parse(localStorage.getItem("fungi_saved_artists")) || [];
+} catch (error) {
+    console.warn("Could not read saved artists:", error);
+    fungiSavedArtists = [];
+}
+
+// The channel currently open in the artist profile.
+selectedArtist = null;
+
+
+// ==========================================
+// YOUTUBE DATA API HELPER
+// ==========================================
+
+async function fungiYouTubeRequest(resource, parameters) {
+    if (!FUNGI_YOUTUBE_API_KEY || FUNGI_YOUTUBE_API_KEY === "PASTE_YOUR_YOUTUBE_DATA_API_KEY_HERE") {
+        throw new Error("Add your YouTube Data API key at the top of music.js.");
+    }
+
+    const url = new URL(`https://www.googleapis.com/youtube/v3/${resource}`);
+
+    // Adds each setting (search term, channel ID, result count, etc.) to the URL.
+    Object.entries(parameters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+            url.searchParams.set(key, value);
+        }
+    });
+    url.searchParams.set("key", FUNGI_YOUTUBE_API_KEY);
+
+    const response = await fetch(url);
+    const data = await response.json();
+    if (!response.ok || data.error) {
+        throw new Error(data.error?.message || `YouTube API error (${response.status}).`);
+    }
+    return data;
+}
+
+
+// ==========================================
+// ONE SEARCH BOX: SEARCH FOR SONGS AND ARTISTS
+// ==========================================
+
+window.searchYouTube = async function() {
+    const input = document.getElementById("search-input");
+    const query = input ? input.value.trim() : "";
+    const artistResults = document.getElementById("artist-results");
+    const songStatus = document.getElementById("song-search-status");
+    const songResults = document.getElementById("playlist");
+
+    if (!query) {
+        songStatus.textContent = "Type something to search for artists and songs.";
+        artistResults.innerHTML = "";
+        songResults.innerHTML = "";
+        return;
+    }
+
+    artistResults.textContent = "Finding artists...";
+    songStatus.textContent = "Finding songs and videos...";
+    songResults.innerHTML = "";
+
+    try {
+        // These two requests happen together: one finds channels, one finds videos.
+        const [artistData, videoData] = await Promise.all([
+            fungiYouTubeRequest("search", {
+                part: "snippet", type: "channel", q: query, maxResults: 12
+            }),
+            fungiYouTubeRequest("search", {
+                part: "snippet", type: "video", q: query, maxResults: 15, order: "relevance"
+            })
+        ]);
+
+        // Draw the artist circles.
+        fungiRenderArtistCircles(artistResults, (artistData.items || []).map(item => ({
+            channelId: item.id.channelId,
+            title: item.snippet.title,
+            description: item.snippet.description || "",
+            thumbnail: item.snippet.thumbnails?.high?.url ||
+                item.snippet.thumbnails?.medium?.url ||
+                item.snippet.thumbnails?.default?.url || ""
+        })));
+
+        // Convert YouTube video results into the song format the existing player uses.
+        queue = (videoData.items || []).map(item => fungiConvertVideo(item)).filter(Boolean);
+        currentIndex = 0;
+        renderQueue();
+        songStatus.textContent = queue.length
+                    ? `${queue.length} songs/videos found for “${query}”. Click one to play it.`
+            : "No songs or videos found for that search.";
+
+    } catch (error) {
+        console.error("Combined search error:", error);
+        artistResults.textContent = "Artist search couldn't load.";
+        songStatus.textContent = `Search failed: ${error.message}`;
+    }
+};
+
+// Keep the old function name working for any existing button or script that calls it.
+window.searchArtists = window.searchYouTube;
+
+
+// ==========================================
+// SHOW ARTISTS AS CLICKABLE CIRCLES
+// ==========================================
+
+function fungiRenderArtistCircles(container, artists) {
+    container.innerHTML = "";
+    if (!artists.length) {
+        container.textContent = "No matching artists or channels found.";
+        return;
+    }
+
+    artists.forEach(artist => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "artist-circle";
+        button.title = `Open ${artist.title}'s channel`;
+        button.addEventListener("click", () => fungiOpenArtist(artist));
+
+        const image = document.createElement("img");
+        image.src = artist.thumbnail || "";
+        image.alt = `${artist.title} profile picture`;
+        image.loading = "lazy";
+
+        const name = document.createElement("span");
+        name.textContent = artist.title;
+
+        button.appendChild(image);
+        button.appendChild(name);
+        container.appendChild(button);
+    });
+}
+
+
+// ==========================================
+// SAVE AND DISPLAY ARTISTS
+// ==========================================
+
+function fungiSaveArtist(artist) {
+    if (fungiSavedArtists.some(saved => saved.channelId === artist.channelId)) {
+        alert("That artist is already saved.");
+        return;
+    }
+    fungiSavedArtists.push(artist);
+    localStorage.setItem("fungi_saved_artists", JSON.stringify(fungiSavedArtists));
+    fungiRenderSavedArtists();
+}
+
+function fungiRenderSavedArtists() {
+    const container = document.getElementById("saved-artists");
+    if (!container) return;
+
+    // Keep the saved-artist circles clickable; right-click is not needed to remove one.
+    container.innerHTML = "";
+    if (!fungiSavedArtists.length) {
+        container.textContent = "No saved artists yet. Save an artist from their channel profile.";
+        return;
+    }
+
+    fungiSavedArtists.forEach(artist => {
+        const wrapper = document.createElement("div");
+        wrapper.style.cssText = "display:flex; flex-direction:column; align-items:center; gap:5px;";
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "artist-circle";
+        button.addEventListener("click", () => fungiOpenArtist(artist));
+
+        const image = document.createElement("img");
+        image.src = artist.thumbnail || "";
+        image.alt = `${artist.title} profile picture`;
+        image.loading = "lazy";
+
+        const name = document.createElement("span");
+        name.textContent = artist.title;
+        button.appendChild(image);
+        button.appendChild(name);
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "Remove";
+        remove.style.cssText = "font-size:11px; padding:5px 9px;";
+        remove.addEventListener("click", () => {
+            fungiSavedArtists = fungiSavedArtists.filter(item => item.channelId !== artist.channelId);
+            localStorage.setItem("fungi_saved_artists", JSON.stringify(fungiSavedArtists));
+            fungiRenderSavedArtists();
+        });
+
+        wrapper.appendChild(button);
+        wrapper.appendChild(remove);
+        container.appendChild(wrapper);
+    });
+}
+
+
+// ==========================================
+// OPEN A CHANNEL PROFILE
+// ==========================================
+
+async function fungiOpenArtist(artist) {
+    selectedArtist = artist;
+
+    const view = document.getElementById("artist-channel-view");
+    const info = document.getElementById("artist-channel-info");
+    const videos = document.getElementById("artist-channel-videos");
+    const playlists = document.getElementById("artist-channel-playlists");
+
+    view.style.display = "block";
+    info.textContent = "Loading channel information...";
+    videos.textContent = "Loading most viewed videos...";
+    playlists.innerHTML = "";
+
+    try {
+        const data = await fungiYouTubeRequest("channels", {
+            part: "snippet,statistics,contentDetails", id: artist.channelId
+        });
+        if (!data.items || !data.items.length) {
+            info.textContent = "Channel information is unavailable.";
+            return;
+        }
+
+        const channel = data.items[0];
+        selectedArtist = {
+            channelId: channel.id,
+            title: channel.snippet.title,
+            description: channel.snippet.description || "",
+            thumbnail: channel.snippet.thumbnails?.high?.url ||
+                channel.snippet.thumbnails?.medium?.url || artist.thumbnail || "",
+            uploadsPlaylistId: channel.contentDetails?.relatedPlaylists?.uploads || ""
+        };
+
+        info.innerHTML = "";
+        const image = document.createElement("img");
+        image.className = "artist-profile-avatar";
+        image.src = selectedArtist.thumbnail;
+        image.alt = `${selectedArtist.title} profile picture`;
+
+        const title = document.createElement("h2");
+        title.textContent = selectedArtist.title;
+        title.style.margin = "4px 0";
+
+        const description = document.createElement("p");
+        description.style.cssText = "color:#aaa; white-space:pre-wrap; margin:0;";
+        description.textContent = selectedArtist.description || "No channel description provided.";
+
+        const subscribers = channel.statistics?.hiddenSubscriberCount
+            ? "Hidden"
+            : channel.statistics?.subscriberCount
+                ? Number(channel.statistics.subscriberCount).toLocaleString()
+                : "Unavailable";
+        const videoCount = channel.statistics?.videoCount
+            ? Number(channel.statistics.videoCount).toLocaleString()
+            : "Unavailable";
+
+        const stats = document.createElement("p");
+        stats.textContent = `Subscribers: ${subscribers} | Videos: ${videoCount}`;
+
+        const link = document.createElement("a");
+        link.href = `https://www.youtube.com/channel/${channel.id}`;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = "Visit YouTube Channel";
+        link.style.color = "var(--accent-color)";
+
+        const saveButton = document.createElement("button");
+        saveButton.type = "button";
+        saveButton.textContent = "Save Artist";
+        saveButton.addEventListener("click", () => fungiSaveArtist(selectedArtist));
+
+        info.append(image, title, description, stats, link, saveButton);
+
+        // First show the channel's most-viewed videos, not just its newest uploads.
+        await loadArtistMostViewed();
+
+    } catch (error) {
+        console.error("Channel loading error:", error);
+        info.textContent = `Couldn't load this channel: ${error.message}`;
+    }
+}
+
+
+// ==========================================
+// CONVERT YOUTUBE VIDEO RESULTS TO OUR SONG FORMAT
+// ==========================================
+
+function fungiConvertVideo(item, fallbackChannelId = "") {
+    const snippet = item.snippet || {};
+    const videoId = item.id?.videoId || snippet.resourceId?.videoId || item.contentDetails?.videoId;
+    if (!videoId) return null;
+
+    return {
+        id: videoId,
+        title: snippet.title || "Untitled video",
+        channel: snippet.channelTitle || selectedArtist?.title || "YouTube channel",
+        channelId: snippet.channelId || fallbackChannelId,
+        image: snippet.thumbnails?.medium?.url || snippet.thumbnails?.default?.url ||
+            `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`
+    };
+}
+
+function fungiRenderArtistVideos(container, songs) {
+    container.innerHTML = "";
+    if (!songs.length) {
+        container.textContent = "No videos found for this channel and search.";
+        return;
+    }
+
+    songs.forEach((song, index) => {
+        const card = document.createElement("div");
+        card.className = "track";
+        card.title = "Click to play this video";
+
+        const image = document.createElement("img");
+        image.className = "track-thumb";
+        image.src = song.image;
+        image.alt = song.title;
+        image.loading = "lazy";
+
+        const info = document.createElement("div");
+        info.className = "track-info";
+        const title = document.createElement("div");
+        title.className = "track-title";
+        title.textContent = song.title;
+        const channel = document.createElement("div");
+        channel.style.cssText = "font-size:12px; color:#aaa; margin-top:4px;";
+        channel.textContent = song.channel;
+        info.append(title, channel);
+        card.append(image, info);
+
+        card.addEventListener("click", () => {
+            queue = songs;
+            currentIndex = index;
+            playFromQueue();
+        });
+        container.appendChild(card);
+    });
+}
+
+// ==========================================
+// MOST VIEWED VIDEOS FROM THE SELECTED CHANNEL
+// ==========================================
+
+window.loadArtistMostViewed = async function() {
+    if (!selectedArtist) return;
+    const container = document.getElementById("artist-channel-videos");
+    container.textContent = "Loading most viewed videos...";
+
+    try {
+        const data = await fungiYouTubeRequest("search", {
+            part: "snippet",
+            type: "video",
+            channelId: selectedArtist.channelId,
+            order: "viewCount",
+            maxResults: 20
+        });
+        const songs = (data.items || [])
+            .map(item => fungiConvertVideo(item, selectedArtist.channelId))
+            .filter(Boolean);
+        fungiRenderArtistVideos(container, songs);
+    } catch (error) {
+        console.error("Most viewed videos error:", error);
+        container.textContent = `Couldn't load popular videos: ${error.message}`;
+    }
+};
+
+// Kept as a compatibility alias for any old button or code.
+window.loadArtistUploads = window.loadArtistMostViewed;
+
+
+// ==========================================
+// SEARCH USING THE SAME SINGLE SEARCH BOX, BUT INSIDE THIS CHANNEL
+// ==========================================
+
+window.searchArtistChannel = async function() {
+    if (!selectedArtist) {
+        alert("Open an artist's channel first.");
+        return;
+    }
+
+    const input = document.getElementById("search-input");
+    const query = input ? input.value.trim() : "";
+    const container = document.getElementById("artist-channel-videos");
+    if (!query) {
+        container.textContent = "Type a search in the main Fungi search box first.";
+        return;
+    }
+
+    container.textContent = `Loading all uploads from ${selectedArtist.title} so Fungi can search them...`;
+    try {
+        // A channel's uploads are stored in a special playlist. We walk through
+        // every page (50 videos at a time), instead of only searching a small
+        // sample of the channel's videos.
+        if (!selectedArtist.uploadsPlaylistId) {
+            throw new Error("This channel's uploads playlist is unavailable.");
+        }
+
+        const allUploads = [];
+        let pageToken = "";
+        let pageNumber = 0;
+
+        do {
+            const page = await fungiYouTubeRequest("playlistItems", {
+                part: "snippet,contentDetails",
+                playlistId: selectedArtist.uploadsPlaylistId,
+                maxResults: 50,
+                pageToken
+            });
+
+            allUploads.push(...(page.items || []));
+            pageToken = page.nextPageToken || "";
+            pageNumber++;
+            container.textContent = `Loading channel uploads... ${allUploads.length} videos checked`;
+        } while (pageToken);
+
+        // Search the title and description of every upload we retrieved.
+        const searchWords = query.toLocaleLowerCase().split(/\s+/).filter(Boolean);
+        const matchingSongs = allUploads
+            .filter(item => {
+                const searchableText = `${item.snippet?.title || ""} ${item.snippet?.description || ""}`.toLocaleLowerCase();
+                return searchWords.every(word => searchableText.includes(word));
+            })
+            .map(item => fungiConvertVideo(item, selectedArtist.channelId))
+            .filter(Boolean);
+
+        fungiRenderArtistVideos(container, matchingSongs);
+        if (!matchingSongs.length) {
+            container.textContent = `No uploaded videos from ${selectedArtist.title} matched “${query}”. Checked ${allUploads.length} uploads.`;
+        }
+    } catch (error) {
+        console.error("Channel search error:", error);
+        container.textContent = `Channel search failed: ${error.message}`;
+    }
+};
+
+
+// ==========================================
+// LOAD A CHANNEL'S PUBLIC PLAYLISTS
+// ==========================================
+
+window.loadArtistPlaylists = async function() {
+    if (!selectedArtist) return;
+    const container = document.getElementById("artist-channel-playlists");
+    container.textContent = "Loading public playlists...";
+
+    try {
+        const data = await fungiYouTubeRequest("playlists", {
+            part: "snippet,contentDetails",
+            channelId: selectedArtist.channelId,
+            maxResults: 15
+        });
+        container.innerHTML = "";
+        if (!data.items || !data.items.length) {
+            container.textContent = "No public playlists found.";
+            return;
+        }
+
+        data.items.forEach(playlist => {
+            const row = document.createElement("div");
+            row.className = "track";
+            const title = document.createElement("div");
+            title.className = "track-info";
+            title.textContent = `${playlist.snippet.title} (${playlist.contentDetails?.itemCount ?? "?"} videos)`;
+            const openButton = document.createElement("button");
+            openButton.type = "button";
+            openButton.textContent = "Open";
+            openButton.addEventListener("click", () => fungiLoadPublicPlaylist(playlist.id));
+            row.append(title, openButton);
+            container.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Channel playlists error:", error);
+        container.textContent = `Couldn't load playlists: ${error.message}`;
+    }
+};
+
+async function fungiLoadPublicPlaylist(playlistId) {
+    const container = document.getElementById("artist-channel-videos");
+    container.textContent = "Loading playlist videos...";
+    try {
+        const data = await fungiYouTubeRequest("playlistItems", {
+            part: "snippet,contentDetails", playlistId, maxResults: 50
+        });
+        const songs = (data.items || [])
+            .map(item => fungiConvertVideo(item, selectedArtist?.channelId || ""))
+            .filter(Boolean);
+        fungiRenderArtistVideos(container, songs);
+    } catch (error) {
+        console.error("Public playlist error:", error);
+        container.textContent = `Couldn't load playlist: ${error.message}`;
+    }
+}
+
+
+// ==========================================
+// RECOMMENDED SONGS FROM SAVED ARTISTS
+// ==========================================
+
+window.loadRecommendedSongs = async function() {
+
+    const container = document.getElementById("recommended-songs");
+
+    if (!fungiSavedArtists.length) {
+        container.textContent = "Save some artists first to get recommendations.";
+        return;
+    }
+
+    container.textContent = "Finding recommendations...";
+
+    try {
+        const artistsToSearch = fungiSavedArtists.slice(0, 4);
+
+        const results = await Promise.all(
+            artistsToSearch.map(artist => fungiYouTubeRequest("search", {
+                part: "snippet",
+                type: "video",
+                channelId: artist.channelId,
+                q: "official song",
+                maxResults: 4
+            }))
+        );
+
+        const alreadyQueued = new Set(queue.map(song => song.id));
+        const uniqueSongs = new Map();
+
+        results.flatMap(result => result.items || []).forEach(item => {
+            const song = fungiConvertVideo(item);
+            if (song && !alreadyQueued.has(song.id)) {
+                uniqueSongs.set(song.id, song);
+            }
+        });
+
+        fungiRenderArtistVideos(container, Array.from(uniqueSongs.values()));
+
+    } catch (error) {
+        console.error("Recommendations error:", error);
+        container.textContent = `Couldn't load recommendations: ${error.message}`;
+    }
+};
+
+
+// ==========================================
+// INITIALIZE THE ARTIST DIRECTORY AND ONE SEARCH BOX
+// ==========================================
+
+fungiRenderSavedArtists();
+
+const fungiSearchForm = document.getElementById("fungi-search-form");
+if (fungiSearchForm) {
+    fungiSearchForm.addEventListener("submit", event => {
+        event.preventDefault(); // Stops the form from refreshing the page.
+        searchYouTube();       // Searches for both channels and videos.
+    });
+}
+
+const artistChannelSearchButton = document.getElementById("artist-channel-search-button");
+if (artistChannelSearchButton) {
+    artistChannelSearchButton.addEventListener("click", searchArtistChannel);
 }

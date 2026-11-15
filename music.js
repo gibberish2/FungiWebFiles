@@ -21,6 +21,7 @@ let customPlaylists = JSON.parse(localStorage.getItem('fungi_custom_playlists'))
 
 // Stores the name of the custom playlist currently selected by the user.
 let currentCustomPlaylistName = "";
+let selectedArtist = null;
 
 
 // ==========================================
@@ -151,6 +152,7 @@ window.searchYouTube = async function() {
             id: item.id.videoId,
             title: item.snippet.title,
             channel: item.snippet.channelTitle,
+            channelId: item.snippet.channelId,
             image: item.snippet.thumbnails.medium ? item.snippet.thumbnails.medium.url : item.snippet.thumbnails.default.url
         }));
 
@@ -166,7 +168,7 @@ window.searchYouTube = async function() {
         console.error(err);
     }
 };
-
+searchArtists()
 
 // ==========================================
 // PLAY SONG FROM QUEUE

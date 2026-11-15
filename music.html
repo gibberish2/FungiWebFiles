@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -109,6 +108,101 @@
             box-sizing: border-box;
         }
 
+
+        #artist-search-input, #artist-channel-search-input {
+            width: 100%;
+            padding: 14px 20px;
+            border: 1px solid var(--glass-border);
+            color: white;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .artist-section-heading {
+            margin: 18px 0 10px;
+        }
+
+        /* ONE SEARCH: artist circles and song results */
+        .fungi-search-panel {
+            width: 100%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .fungi-search-row {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .fungi-search-row input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .artist-circles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            align-items: flex-start;
+        }
+
+        .artist-circle {
+            width: 112px;
+            border: 0;
+            background: transparent;
+            color: white;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            overflow-wrap: anywhere;
+            text-align: center;
+        }
+
+        .artist-circle img {
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+
+        .artist-circle:hover img { transform: scale(1.07); }
+        .artist-circle span { font-size: 13px; font-weight: bold; }
+
+        #artist-channel-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .artist-profile-avatar {
+            width: 100px; height: 100px; border-radius: 50%;
+            object-fit: cover; border: 2px solid var(--accent-color);
+        }
+
+        .search-status { color: #aaa; font-size: 13px; }
+
+        #artist-channel-info {
+            overflow-wrap: anywhere;
+        }
+
+        #artist-channel-info a {
+            display: inline-block;
+            margin-top: 8px;
+        }
 
         #playlist-select {
             width: 100%;
@@ -278,53 +372,64 @@
     </div>
 
     <div class="music-dashboard">
-    <div class="search-container-box">
-    <h3>Find Artists</h3>
 
-    <input
-        id="artist-search-input"
-        placeholder="Search for an artist..."
-    />
-
-    <button onclick="searchArtists()" style="width:100%; margin-top:10px;">
-        Find Artist
-    </button>
-
-    <div id="artist-results"></div>
-</div>
+        <!-- LEFT COLUMN: ONE SEARCH BOX + BOTH TYPES OF RESULTS -->
         <div class="dashboard-column">
-            <div class="search-container-box">
-                <input id="search-input" class="search-box" placeholder="search away.." />
-                <script>
-                    const searchBox = document.getElementById("search-input");
-                    searchBox.addEventListener('keydown', function(event) {
-                        if (event.key === 'Enter') {
-                            event.preventDefault();
-                            searchYouTube();
-                        }
-                    });
-                </script>
-                <button onclick="searchYouTube()" style="width:100%; margin-top:10px;">
-                    search
-                </button>
-            </div>
+            <section class="fungi-search-panel">
+                <h3 style="margin-top:0;">Search Fungi Music</h3>
+                <form id="fungi-search-form" class="fungi-search-row">
+                    <input id="search-input" placeholder="Search songs, artists, or channels..." autocomplete="off" />
+                    <button type="submit">Search</button>
+                </form>
 
-            <div id="playlist" class="button-grid"></div>
+                <h4 class="artist-section-heading">Artists</h4>
+                <div id="artist-results" class="artist-circles"></div>
+
+                <h4 class="artist-section-heading">Songs and Videos</h4>
+                <p id="song-search-status" class="search-status">Search for something to see artists and songs together.</p>
+                <div id="playlist" class="button-grid"></div>
+            </section>
+
+            <section class="playlist-manager">
+                <h3 style="margin-top:0;">Saved Artists</h3>
+                <div id="saved-artists" class="artist-circles"></div>
+            </section>
+
+            <!-- Selected channel profile -->
+            <section id="artist-channel-view" class="playlist-manager" style="display:none;">
+                <div id="artist-channel-info"></div>
+                <h4 class="artist-section-heading">Most Viewed Videos</h4>
+                <div id="artist-channel-videos" class="button-grid"></div>
+                <h4 class="artist-section-heading">Search This Artist's Videos</h4>
+                <p class="search-status">Type a search in the single Fungi search box above, then use this button to search this channel.</p>
+                <button id="artist-channel-search-button" type="button" style="width:100%;">Search This Channel Using My Search</button>
+                <h4 class="artist-section-heading">Public Playlists</h4>
+                <button onclick="loadArtistPlaylists()" style="width:100%;">Load Channel Playlists</button>
+                <div id="artist-channel-playlists" class="button-grid" style="margin-top:15px;"></div>
+            </section>
         </div>
 
+        <!-- RIGHT COLUMN: CUSTOM PLAYLISTS AND RECOMMENDATIONS -->
         <div class="dashboard-column">
             <div class="playlist-manager">
-                <h3 style="margin-top: 0;">playlists</h3>
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                <h3 style="margin-top:0;">playlists</h3>
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
                     <input id="playlist-name-input" placeholder="what shall you call the playlist..." />
                     <button onclick="createCustomPlaylist()">+</button>
                 </div>
-                
-                <select id="playlist-select" onchange="switchCustomPlaylist()" style="margin-bottom: 15px;">
+
+                <select id="playlist-select" onchange="switchCustomPlaylist()" style="margin-bottom:15px;">
                     <option value="">select a playlist twin✌</option>
                 </select>
 
                 <div id="custom-playlist-container" class="button-grid"></div>
+            </div>
+
+            <div class="playlist-manager">
+                <h3 style="margin-top:0;">Recommended Songs</h3>
+                <p style="color:#aaa; font-size:13px;">Suggestions based on the artists you save.</p>
+                <button onclick="loadRecommendedSongs()" style="width:100%;">Find Recommendations</button>
+                <div id="recommended-songs" class="button-grid" style="margin-top:15px;"></div>
             </div>
         </div>
 

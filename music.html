@@ -278,7 +278,20 @@
     </div>
 
     <div class="music-dashboard">
-        
+    <div class="search-container-box">
+    <h3>Find Artists</h3>
+
+    <input
+        id="artist-search-input"
+        placeholder="Search for an artist..."
+    />
+
+    <button onclick="searchArtists()" style="width:100%; margin-top:10px;">
+        Find Artist
+    </button>
+
+    <div id="artist-results"></div>
+</div>
         <div class="dashboard-column">
             <div class="search-container-box">
                 <input id="search-input" class="search-box" placeholder="search away.." />
